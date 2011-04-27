@@ -15,14 +15,15 @@
     "lib": "lib"
   },
   "scripts": {
-    "test": "whiskey --tests \"test/test_driver.js\""
+    "test": "whiskey --tests 'test/swiz.js test/valve.js'"
   },
   "engines": {
     "node": ">= 0.4.0"
   },
   "dependencies" : {
     "async": "0.1.8",
-    "validator": "0.1.8"
+    "validator": "0.1.8",
+    "javascript-ipv6": "0.0.1"
   },
   "devDependencies": {
     "whiskey": "0.2.3"
