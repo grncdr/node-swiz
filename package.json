@@ -1,7 +1,6 @@
 {
   "author": "Rackspace, Inc.",
-  "contributors": [
-  ],
+  "contributors": [],
   "name": "swiz",
   "description": "Serilization and Validation Framework for objects in RESTful APIs",
   "version": "0.1.0",
@@ -23,13 +22,15 @@
   "dependencies" : {
     "async": "0.1.8",
     "validator": "0.1.8",
-    "javascript-ipv6": "0.0.1"
+    "ipv6": "0.0.1"
   },
   "devDependencies": {
-    "whiskey": "0.2.3"
+    "whiskey": "0.3.3"
   },
-  "licenses" : [
-    { "type" : "Apache",
-      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html" }
+  "licenses": [
+    {
+      "type": "Apache",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   ]
 }
