@@ -15,8 +15,7 @@
  *
  */
 
-var assert = require('./assert');
-var swiz = require('../lib/serializer');
+var swiz = require('swiz');
 
 
 // Mock set of serialization defs
@@ -69,18 +68,22 @@ Node.prototype.get_public_address = function(callback) {
 */
 Node.prototype.getSerializerType = function() {return 'Node';};
 
-exports['test_xml_escape_string'] = function() {
-  sw = new swiz.Swiz(def);
+exports['test_xml_escape_string'] = function(test, assert) {
+  var sw = new swiz.Swiz(def);
   assert.deepEqual(sw.xmlEscapeString('<&blah>'), '&lt;&amp;blah&gt;');
+
+  test.finish();
 };
 
-exports['test_xml_elem'] = function() {
-  sw = new swiz.Swiz(def);
+exports['test_xml_elem'] = function(test, assert) {
+  var sw = new swiz.Swiz(def);
   assert.deepEqual('<blah>stuff</blah>', sw.xmlElem('blah', 'stuff'));
+
+  test.finish();
 };
 
-exports['test_xml_array_serial'] = function() {
-  sw = new swiz.Swiz(def);
+exports['test_xml_array_serial'] = function(test, assert) {
+  var sw = new swiz.Swiz(def);
   // test null array handling
   var str = sw.serializeArrayXml('blah', []);
   var eq1 = '<blah/>' === str;
@@ -95,10 +98,12 @@ exports['test_xml_array_serial'] = function() {
   // text mixed-array handling
   assert.deepEqual('<blah>1</blah><blah>bla</blah><blah>2</blah>',
       sw.serializeArrayXml('blah', [1, 'bla', '2']));
+
+  test.finish();
 };
 
-exports['test_xml_array_hash'] = function() {
-  sw = new swiz.Swiz(def);
+exports['test_xml_array_hash'] = function(test, assert) {
+  var sw = new swiz.Swiz(def);
   // test null hash handling
   var str = sw.serializeHashXml('blah', {});
   var eq1 = '<blah/>' === str;
@@ -113,10 +118,12 @@ exports['test_xml_array_hash'] = function() {
   // tets mixed-hash handling
   assert.deepEqual('<blah><a>1</a><b>c</b></blah>', sw.serializeHashXml(
       'blah', {'a': '1', 'b': 'c'}));
+
+  test.finish();
 };
 
-exports['test_build_int_node_xml'] = function() {
-  sw = new swiz.Swiz(def);
+exports['test_build_int_node_xml'] = function(test, assert) {
+  var sw = new swiz.Swiz(def);
   assert.deepEqual(sw.buildIntNode(swiz.SERIALIZATION.SERIALIZATION_XML,
       'blah', 'blag'), '<blah>blag</blah>');
   assert.deepEqual(sw.buildIntNode(swiz.SERIALIZATION.SERIALIZATION_XML,
@@ -125,10 +132,12 @@ exports['test_build_int_node_xml'] = function() {
       'blah', {'a': 'blah', 'b': 1}), '<blah><a>blah</a><b>1</b></blah>');
   assert.deepEqual(sw.buildIntNode(swiz.SERIALIZATION.SERIALIZATION_XML,
       'blah', 1), '<blah>1</blah>');
+
+  test.finish();
 };
 
-exports['test_build_int_node_json'] = function() {
-  sw = new swiz.Swiz(def);
+exports['test_build_int_node_json'] = function(test, assert) {
+  var sw = new swiz.Swiz(def);
   assert.deepEqual(sw.buildIntNode(swiz.SERIALIZATION.SERIALIZATION_JSON,
       'blah', 'blag'), ['blah', 'blag']);
   assert.deepEqual(sw.buildIntNode(swiz.SERIALIZATION.SERIALIZATION_JSON,
@@ -137,14 +146,16 @@ exports['test_build_int_node_json'] = function() {
       'blah', {'a': 'blah', 'b': 1}), ['blah', {'a': 'blah', 'b' : 1}]);
   assert.deepEqual(sw.buildIntNode(swiz.SERIALIZATION.SERIALIZATION_JSON,
       'blah', 1), ['blah', 1]);
+
+  test.finish();
 };
 
-exports['test_serial_xml'] = function() {
-  blahnode = new Node();
-  sw = new swiz.Swiz(def);
+exports['test_serial_xml'] = function(test, assert) {
+  var blahnode = new Node();
+  var sw = new swiz.Swiz(def);
   //swiz.loadDefinitions(def);
   sw.serialize(swiz.SERIALIZATION.SERIALIZATION_XML, 1, blahnode,
-      function(err, results) 
+      function(err, results)
       {
         // need to make an appointemnt with a DOM for this one.
         assert.deepEqual(results, '<?xml version="1.0" encoding="UTF-8"?>' +
@@ -153,17 +164,18 @@ exports['test_serial_xml'] = function() {
             'agent_name><ipaddress>123.33.22.1</ipaddress>' +
             '<public_ips>123.45.55.44</public_ips>' +
             '<public_ips>122.123.32.2</public_ips></Node>');
-        //console.log(results);
+
+        test.finish();
       }
   );
 };
 
-exports['test_serial_json'] = function() {
-  blahnode = new Node();
-  sw = new swiz.Swiz(def);
+exports['test_serial_json'] = function(test, assert) {
+  var blahnode = new Node();
+  var sw = new swiz.Swiz(def);
   //swiz.loadDefinitions(def);
   sw.serialize(swiz.SERIALIZATION.SERIALIZATION_JSON, 1, blahnode,
-      function(err, results) 
+      function(err, results)
       {
         var rep = JSON.parse(results);
         assert.deepEqual(rep.id, 15245);
@@ -172,17 +184,19 @@ exports['test_serial_json'] = function() {
         assert.deepEqual(rep.agent_name, 'gl<ah');
         assert.deepEqual(rep.ipaddress, '123.33.22.1');
         assert.deepEqual(rep.public_ips, ['123.45.55.44', '122.123.32.2']);
+
+        test.finish();
       }
   );
 };
 
-exports['test_serial_array_xml'] = function() {
-  blahnode = new Node();
-  blahnode2 = new Node();
+exports['test_serial_array_xml'] = function(test, assert) {
+  var blahnode = new Node();
+  var blahnode2 = new Node();
   blahnode2.hash_id = '444';
   blahnode2.agent_name = 'your mom';
   var blaharr = [blahnode, blahnode2];
-  sw = new swiz.Swiz(def);
+  var sw = new swiz.Swiz(def);
   sw.serialize(swiz.SERIALIZATION.SERIALIZATION_XML, 1, blaharr,
       function(err, results)
       {
@@ -198,30 +212,34 @@ exports['test_serial_array_xml'] = function() {
             'agent_name><ipaddress>123.33.22.1</ipaddress>' +
             '<public_ips>123.45.55.44</public_ips>' +
             '<public_ips>122.123.32.2</public_ips></Node></group>');
+
+        test.finish();
       }
   );
 };
 
-exports['test_error_type'] = function() {
-  blah = { };
-  sw = new swiz.Swiz(def);
+exports['test_error_type'] = function(test, assert) {
+  var blah = { };
+  var sw = new swiz.Swiz(def);
   blah.getSerializerType = function() {return 'monito';};
   sw.serialize(swiz.SERIALIZATION.SERIALIZATION_JSON, 1, blah,
       function(err, results)
       {
         assert.ok(err instanceof Error);
+
+        test.finish();
       }
   );
 };
 
 
-exports['test_serial_array_json'] = function() {
-  blahnode = new Node();
-  blahnode2 = new Node();
+exports['test_serial_array_json'] = function(test, assert) {
+  var blahnode = new Node();
+  var blahnode2 = new Node();
   blahnode2.hash_id = '444';
   blahnode2.agent_name = 'your mom';
   var blaharr = [blahnode, blahnode2];
-  sw = new swiz.Swiz(def);
+  var sw = new swiz.Swiz(def);
   sw.serialize(swiz.SERIALIZATION.SERIALIZATION_JSON, 1, blaharr,
       function(err, results)
       {
@@ -240,6 +258,8 @@ exports['test_serial_array_json'] = function() {
         assert.deepEqual(rep[1].ipaddress, '123.33.22.1');
         assert.deepEqual(rep[1].public_ips,
             ['123.45.55.44', '122.123.32.2']);
+
+        test.finish();
       }
   );
 };

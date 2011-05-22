@@ -15,548 +15,656 @@
  *
  */
 
+var swiz = require('swiz');
 
-var assert = require('./assert');
-var validate = require('../lib//valve');
-var V = require('../lib/valve').Valve;
-
-exports['test_validate_int'] = function() {
+exports['test_swiz_int'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().isInt()
+    a: new swiz.Valve().isInt()
   };
 
   // positive case
   var obj = { a: 1 };
   var obj_ext = { a: 1, b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'integer test');
   assert.deepEqual(rv.cleaned, obj);
 
   // negative case
   var neg = { a: 'test' };
-  rv = validate.check(schema, neg);
+  rv = swiz.check(schema, neg);
   assert.ok(rv.is_valid === false, 'integer test (negative case)');
+
+  test.finish();
 };
 
-exports['test_validate_email'] = function() {
+exports['test_swiz_email'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().isEmail()
+    a: new swiz.Valve().isEmail()
   };
 
   // positive case
   var obj = { a: 'test@cloudkick.com' };
   var obj_ext = { a: 'test@cloudkick.com', b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'email test');
   assert.deepEqual(rv.cleaned, obj);
 
   // negative case
   var neg = { a: 'invalidemail@' };
-  rv = validate.check(schema, neg);
+  rv = swiz.check(schema, neg);
   assert.ok(rv.is_valid === false, 'email test (negative case)');
+
+  test.finish();
 };
 
-exports['test_validate_url'] = function() {
+exports['test_swiz_url'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().isUrl()
+    a: new swiz.Valve().isUrl()
   };
 
   // positive case
   var obj = { a: 'http://www.cloudkick.com' };
   var obj_ext = { a: 'http://www.cloudkick.com', b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'url test');
   assert.deepEqual(rv.cleaned, obj);
 
   // negative case
   var neg = { a: 'invalid/' };
-  rv = validate.check(schema, neg);
+  rv = swiz.check(schema, neg);
   assert.ok(rv.is_valid === false, 'url test (negative case)');
+
+  test.finish();
 };
 
-exports['test_validate_ip'] = function() {
+exports['test_swiz_ip'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().isIP()
+    a: new swiz.Valve().isIP()
   };
 
   // positive case
   var obj = { a: '192.168.0.1' };
   var obj_ext = { a: '192.168.0.1', b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'IP test');
   assert.deepEqual(rv.cleaned, obj);
 
   // negative case
   var neg = { a: 'invalid/' };
-  rv = validate.check(schema, neg);
+  rv = swiz.check(schema, neg);
   assert.ok(rv.is_valid === false, 'IP test (negative case)');
 
   neg = {a: '12345' };
-  rv = validate.check(schema, neg);
+  rv = swiz.check(schema, neg);
   assert.ok(rv.is_valid === false, 'IP test (negative case 2)');
 
   // IPv6 normalization
   obj_ext = { a: '2001:db8::1:0:0:1'};
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'IPv6 test and normalization');
   assert.deepEqual(rv.cleaned.a, '2001:0db8:0000:0000:0001:0000:0000:0001');
+
+  test.finish();
 };
 
-exports['test_validate_cidr'] = function() {
+exports['test_swiz_ip_blacklist'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().isCIDR()
+    a: new swiz.Valve().isIP().notIpBlacklisted()
+  };
+
+  // positive case
+  var obj_ext = { a: '173.45.245.32', b: 2 };
+  rv = swiz.check(schema, obj_ext);
+  assert.ok(rv.is_valid === true, 'IP Blacklist test');
+
+  // negative case
+  var neg = { a: 'invalid/' };
+  rv = swiz.check(schema, neg);
+  assert.ok(rv.is_valid === false, 'IP blacklist test (negative case)');
+
+  neg = {a: '192.168.0.1' };
+  rv = swiz.check(schema, neg);
+  assert.ok(rv.is_valid === false, 'IP blacklist test (negative case 2)');
+
+  // IPv6
+  obj_ext = { a: '2001:db8::1:0:0:1'};
+  rv = swiz.check(schema, obj_ext);
+  assert.ok(rv.is_valid === true, 'IPv6 blacklist test');
+
+  neg = {a: 'fc00:1:0:0:1' };
+  rv = swiz.check(schema, neg);
+  assert.ok(rv.is_valid === false, 'IPv6 blacklist test (negative case)');
+
+
+  test.finish();
+};
+
+exports['test_swiz_cidr'] = function(test, assert) {
+  var rv;
+  var schema = {
+    a: new swiz.Valve().isCIDR()
   };
 
   // positive case
   var obj = { a: '192.168.0.1/2' };
   var obj_ext = { a: '192.168.0.1/2', b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'CIDR test');
   assert.deepEqual(rv.cleaned, obj);
 
   // negative case
   var neg = { a: 'invalid/' };
-  rv = validate.check(schema, neg);
+  rv = swiz.check(schema, neg);
   assert.ok(rv.is_valid === false, 'CIDR test (negative case)');
 
   neg = { a: '192.168.0.1/128' };
-  rv = validate.check(schema, neg);
+  rv = swiz.check(schema, neg);
   assert.ok(rv.is_valid === false, 'CIDR test (negative case 2)');
 
   // IPv6 normalization
   obj_ext = { a: '2001:db8::1:0:0:1/3'};
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'IPv6 CIDR test');
   assert.deepEqual(rv.cleaned.a,
       '2001:0db8:0000:0000:0001:0000:0000:0001/3');
 
   neg = { a: '2001:db8::1:0:0:1/194' };
-  rv = validate.check(schema, neg);
+  rv = swiz.check(schema, neg);
   assert.ok(rv.is_valid === false, 'IPv6 CIDR test (negative case)');
 
+  test.finish();
 };
 
-exports['test_validate_alpha'] = function() {
+exports['test_swiz_alpha'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().isAlpha()
+    a: new swiz.Valve().isAlpha()
   };
 
   // positive case
   var obj = { a: 'ABC' };
   var obj_ext = { a: 'ABC', b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'alpha test');
   assert.deepEqual(rv.cleaned, obj);
 
   // negative case
   var neg = { a: 'invalid/' };
-  rv = validate.check(schema, neg);
+  rv = swiz.check(schema, neg);
   assert.ok(rv.is_valid === false, 'alpha test (negative case)');
+
+  test.finish();
 };
 
-exports['test_validate_alphanumeric'] = function() {
+exports['test_swiz_alphanumeric'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().isAlphanumeric()
+    a: new swiz.Valve().isAlphanumeric()
   };
 
   // positive case
   var obj = { a: 'ABC123' };
   var obj_ext = { a: 'ABC123', b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'alphanumeric test');
   assert.deepEqual(rv.cleaned, obj);
 
   // negative case
   var neg = { a: 'invalid/' };
-  rv = validate.check(schema, neg);
+  rv = swiz.check(schema, neg);
   assert.ok(rv.is_valid === false, 'alphanumeric test (negative case)');
+
+  test.finish();
 };
 
-exports['test_validate_numeric'] = function() {
+exports['test_swiz_numeric'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().isNumeric()
+    a: new swiz.Valve().isNumeric()
   };
 
   // positive case
   var obj = { a: '123' };
   var obj_ext = { a: 123, b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'numeric test');
   assert.deepEqual(rv.cleaned, obj);
 
   // negative case
   var neg = { a: '/' };
-  rv = validate.check(schema, neg);
+  rv = swiz.check(schema, neg);
   assert.ok(rv.is_valid === false, 'numeric test (negative case)');
+
+  test.finish();
 };
 
-exports['test_validate_lowercase'] = function() {
+exports['test_swiz_lowercase'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().isLowercase()
+    a: new swiz.Valve().isLowercase()
   };
 
   // positive case
   var obj = { a: 'abc' };
   var obj_ext = { a: 'abc', b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'lowercase test');
   assert.deepEqual(rv.cleaned, obj);
 
   // negative case
   var neg = { a: 'ABCabc' };
-  rv = validate.check(schema, neg);
+  rv = swiz.check(schema, neg);
   assert.ok(rv.is_valid === false, 'lowercase test (negative case)');
+
+  test.finish();
 };
 
-exports['test_validate_uppercase'] = function() {
+exports['test_swiz_uppercase'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().isUppercase()
+    a: new swiz.Valve().isUppercase()
   };
 
   // positive case
   var obj = { a: 'ABC' };
   var obj_ext = { a: 'ABC', b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'uppercase test');
   assert.deepEqual(rv.cleaned, obj);
 
   // negative case
   var neg = { a: 'ABCabc' };
-  rv = validate.check(schema, neg);
+  rv = swiz.check(schema, neg);
   assert.ok(rv.is_valid === false, 'uppercase test (negative case)');
+
+  test.finish();
 };
 
-exports['test_validate_decimal'] = function() {
+exports['test_swiz_decimal'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().isDecimal()
+    a: new swiz.Valve().isDecimal()
   };
 
   // positive case
   var obj = { a: '123.123' };
   var obj_ext = { a: 123.123, b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'decimal test');
   assert.deepEqual(rv.cleaned, obj);
 
   // negative case
   var neg = { a: 'ABCabc' };
-  rv = validate.check(schema, neg);
+  rv = swiz.check(schema, neg);
   assert.ok(rv.is_valid === false, 'decimal test (negative case)');
+
+  test.finish();
 };
 
-exports['test_validate_float'] = function() {
+exports['test_swiz_float'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().isFloat()
+    a: new swiz.Valve().isFloat()
   };
 
   // positive case
   var obj = { a: 123.123 };
   var obj_ext = { a: 123.123, b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'float test');
   assert.deepEqual(rv.cleaned, obj);
 
   // negative case
   var neg = { a: 'ABCabc' };
-  rv = validate.check(schema, neg);
+  rv = swiz.check(schema, neg);
   assert.ok(rv.is_valid === false, 'float test (negative case)');
+
+  test.finish();
 };
 
-exports['test_validate_notnull'] = function() {
+exports['test_swiz_notnull'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().notNull()
+    a: new swiz.Valve().notNull()
   };
 
   // positive case
   var obj = { a: '1' };
   var obj_ext = { a: '1', b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'notnull test');
   assert.deepEqual(rv.cleaned, obj);
 
   // negative case
   var neg = { a: '' };
-  rv = validate.check(schema, neg);
+  rv = swiz.check(schema, neg);
   assert.ok(rv.is_valid === false, 'notnull test (negative case)');
+
+  test.finish();
 };
 
-exports['test_validate_notempty'] = function() {
+exports['test_swiz_notempty'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().notEmpty()
+    a: new swiz.Valve().notEmpty()
   };
 
   // positive case
   var obj = { a: '1' };
   var obj_ext = { a: '1', b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'notempty test');
   assert.deepEqual(rv.cleaned, obj);
 
   // negative case
   var neg = { a: '' };
-  rv = validate.check(schema, neg);
+  rv = swiz.check(schema, neg);
   assert.ok(rv.is_valid === false, 'notempty test (negative case)');
+
+  test.finish();
 };
 
-exports['test_validate_regex'] = function() {
+exports['test_swiz_regex'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().regex('^a$')
+    a: new swiz.Valve().regex('^a$')
   };
 
   // positive case
   var obj = { a: 'a' };
   var obj_ext = { a: 'a', b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'regex test');
   assert.deepEqual(rv.cleaned, obj);
 
   // negative case
   var neg = { a: 'b' };
-  rv = validate.check(schema, neg);
+  rv = swiz.check(schema, neg);
   assert.ok(rv.is_valid === false, 'regex test (negative case)');
+
+  test.finish();
 };
 
-exports['test_validate_notregex'] = function() {
+exports['test_swiz_notregex'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().notRegex(/e/)
+    a: new swiz.Valve().notRegex(/e/)
   };
 
   // positive case
   var obj = { a: 'foobar' };
   var obj_ext = { a: 'foobar', b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'notregex test');
   assert.deepEqual(rv.cleaned, obj);
+
+  test.finish();
 };
 
-exports['test_validate_len'] = function() {
+exports['test_swiz_len'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().len(1)
+    a: new swiz.Valve().len(1)
   };
 
   // positive case
   var obj = { a: '1' };
   var obj_ext = { a: '1', b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'len test');
   assert.deepEqual(rv.cleaned, obj);
 
   // negative case
   var neg = { a: '' };
-  rv = validate.check(schema, neg);
+  rv = swiz.check(schema, neg);
   assert.ok(rv.is_valid === false, 'len test (negative case)');
+
+  test.finish();
 };
 
-exports['test_validate_null'] = function() {
+exports['test_swiz_null'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().isNull()
+    a: new swiz.Valve().isNull()
   };
 
   // positive case
   var obj = { a: null};
   var obj_ext = { a: null, b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'null test');
   assert.deepEqual(rv.cleaned, obj);
 
   // negative case
   var neg = { a: 'not null' };
-  rv = validate.check(schema, neg);
+  rv = swiz.check(schema, neg);
   assert.ok(rv.is_valid === false, 'null test (negative case)');
+
+  test.finish();
 };
 
-exports['test_validate_equals'] = function() {
+exports['test_swiz_equals'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().equals(123)
+    a: new swiz.Valve().equals(123)
   };
 
   // positive case
   var obj = { a: 123};
   var obj_ext = { a: 123, b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'equals test');
   assert.deepEqual(rv.cleaned, obj);
 
   // negative case
   var neg = { a: 'not 123' };
-  rv = validate.check(schema, neg);
+  rv = swiz.check(schema, neg);
   assert.ok(rv.is_valid === false, 'equals test (negative case)');
+
+  test.finish();
 };
 
-exports['test_validate_present'] = function() {
+exports['test_swiz_present'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().notEmpty()
+    a: new swiz.Valve().notEmpty()
   };
 
   // positive case
   var obj = { a: 123};
   var obj_ext = { a: 123, b: 2 };
-  rv = validate.check(schema, obj_ext);
-  assert.ok(rv.is_valid === true, 'validate present');
+  rv = swiz.check(schema, obj_ext);
+  assert.ok(rv.is_valid === true, 'swiz present');
   assert.deepEqual(rv.cleaned, obj);
 
   // negative case
   var neg = { b: 2 };
-  rv = validate.check(schema, neg);
-  assert.ok(rv.is_valid === false, 'validate (negative case)');
+  rv = swiz.check(schema, neg);
+  assert.ok(rv.is_valid === false, 'swiz (negative case)');
+
+  test.finish();
 };
 
-exports['test_validate_contains'] = function() {
+exports['test_swiz_contains'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().contains('abc')
+    a: new swiz.Valve().contains('abc')
   };
 
   // positive case
   var obj = { a: 'abc'};
   var obj_ext = { a: 'abc', b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'contains test');
   assert.deepEqual(rv.cleaned, obj);
 
   // negative case
   var neg = { a: '123' };
-  rv = validate.check(schema, neg);
+  rv = swiz.check(schema, neg);
   assert.ok(rv.is_valid === false, 'contains test (negative case)');
+
+  test.finish();
 };
 
-exports['test_validate_not_contains'] = function() {
+exports['test_swiz_not_contains'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().notContains('abc')
+    a: new swiz.Valve().notContains('abc')
   };
 
   // positive case
   var obj = { a: '123'};
   var obj_ext = { a: '123', b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'not contains test');
   assert.deepEqual(rv.cleaned, obj);
 
   // negative case
   var neg = { a: 'abc' };
-  rv = validate.check(schema, neg);
+  rv = swiz.check(schema, neg);
   assert.ok(rv.is_valid === false, 'not contains test (negative case)');
+
+  test.finish();
 };
 
-exports['test_validate_chain'] = function() {
+exports['test_swiz_chain'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().len(1).isNumeric()
+    a: new swiz.Valve().len(1).isNumeric()
   };
 
   // positive case
   var obj = { a: '1' };
   var obj_ext = { a: '1', b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'chain test');
   assert.deepEqual(rv.cleaned, obj);
 
   // negative case
-  rv = validate.check(schema, { a: '' });
+  rv = swiz.check(schema, { a: '' });
   assert.ok(rv.is_valid === false, 'chain test (negative case)');
 
   // negative case
-  rv = validate.check(schema, { a: 'A' });
+  rv = swiz.check(schema, { a: 'A' });
   assert.ok(rv.is_valid === false, 'chain test (negative case)');
+
+  test.finish();
 };
 
-exports['test_validate_nested'] = function() {
+exports['test_swiz_nested'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().array(new V().isInt().toInt())
+    a: new swiz.Valve().array(new swiz.Valve().isInt().toInt())
   };
 
   // positive case
   var obj = { a: [1] };
   var obj_ext = { a: ['1'], b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'nested test');
   assert.deepEqual(rv.cleaned, obj);
+
+  test.finish();
 };
 
 
-exports['test_validate_tofloat'] = function() {
+exports['test_swiz_tofloat'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().array(new V().toFloat())
+    a: new swiz.Valve().array(new swiz.Valve().toFloat())
   };
 
   // positive case
   var obj = { a: [3.145] };
   var obj_ext = { a: ['3.145'], b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'tofloat test');
   assert.ok(typeof rv.cleaned.a[0] === 'number', 'tofloat === number test');
   assert.deepEqual(rv.cleaned, obj);
+
+  test.finish();
 };
 
 
-exports['test_validate_string'] = function() {
-  var rv;
+exports['test_swiz_string'] = function(test, assert) {
+  var rv, obj, obj_ext;
   var schema = {
-    a: new V().string()
+    a: new swiz.Valve().string()
   };
 
   // positive case
-  var obj = { a: 'test' };
-  var obj_ext = { a: 'test', b: 2 };
-  rv = validate.check(schema, obj_ext);
+  obj = { a: 'test' };
+  obj_ext = { a: 'test', b: 2 };
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'string test');
   assert.deepEqual(rv.cleaned, obj);
 
   // negative case
-  var obj = { a: 123 };
-  var obj_ext = { a: 123, b: 2 };
-  rv = validate.check(schema, obj_ext);
+  obj = { a: 123 };
+  obj_ext = { a: 123, b: 2 };
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === false, 'string test (negative case)');
+
+  test.finish();
 };
 
 
-exports['test_validate_nested_array'] = function() {
+exports['test_swiz_nested_array'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().array(new V().string())
+    a: new swiz.Valve().array(new swiz.Valve().string())
   };
 
   // positive case
   var obj = { a: ['test'] };
   var obj_ext = { a: ['test'], b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'string test');
   assert.deepEqual(rv.cleaned, obj);
+
+  test.finish();
 };
 
-exports['test_validate_nested_hash'] = function() {
+exports['test_swiz_nested_hash'] = function(test, assert) {
   var rv;
   var schema = {
-    a: new V().hash(new V().string(), new V().string())
+    a: new swiz.Valve().hash(new swiz.Valve().string(), new swiz.Valve().string())
   };
 
   // positive case
   var obj = { a: {'test' : 'test'} };
   var obj_ext = { a: {'test' : 'test'}, b: 2 };
-  rv = validate.check(schema, obj_ext);
+  rv = swiz.check(schema, obj_ext);
   assert.ok(rv.is_valid === true, 'hash test');
   assert.deepEqual(rv.cleaned, obj);
+
+  test.finish();
+};
+
+exports['test_swiz_range'] = function(test, assert) {
+  var rv;
+  var schema = {
+    a: new swiz.Valve().range(1, 65535)
+  };
+
+  // positive case
+  var obj = { a: 500 };
+  var obj_ext = { a: 500, b: 2 };
+  rv = swiz.check(schema, obj_ext);
+  assert.ok(rv.is_valid === true, 'range test');
+  assert.deepEqual(rv.cleaned, obj);
+
+  // negative case
+  obj = { a: 65536 };
+  obj_ext = { a: 65536, b: 2 };
+  rv = swiz.check(schema, obj_ext);
+  console.log(rv);
+  assert.ok(rv.is_valid === false, 'range test');
+
+  test.finish();
 };
