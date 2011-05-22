@@ -11,6 +11,6 @@ export NODE_PATH = lib/
 default: test
 
 test:
-	node_modules/.bin/whiskey --tests "${TESTS}"
+	${WHISKEY} --tests "${TESTS}"
 
 .PHONY: default test
