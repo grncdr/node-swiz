@@ -96,12 +96,6 @@ exports['test_xml_escape_string'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_xml_elem'] = function(test, assert) {
-  var sw = new swiz.Swiz(def);
-  assert.deepEqual('<blah>stuff</blah>', sw.xmlElem('blah', 'stuff'));
-
-  test.finish();
-};
 
 exports['test_serial_xml'] = function(test, assert) {
   var blahnode = new Node();
