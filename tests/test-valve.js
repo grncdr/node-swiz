@@ -17,7 +17,7 @@
 
 var swiz = require('swiz');
 
-exports['test_swiz_int'] = function(test, assert) {
+exports['test_validate_int'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().isInt()
@@ -38,7 +38,7 @@ exports['test_swiz_int'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_email'] = function(test, assert) {
+exports['test_validate_email'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().isEmail()
@@ -59,7 +59,7 @@ exports['test_swiz_email'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_url'] = function(test, assert) {
+exports['test_validate_url'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().isUrl()
@@ -80,7 +80,7 @@ exports['test_swiz_url'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_ip'] = function(test, assert) {
+exports['test_validate_ip'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().isIP()
@@ -111,7 +111,7 @@ exports['test_swiz_ip'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_ip_blacklist'] = function(test, assert) {
+exports['test_validate_ip_blacklist'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().isIP().notIpBlacklisted()
@@ -144,7 +144,7 @@ exports['test_swiz_ip_blacklist'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_cidr'] = function(test, assert) {
+exports['test_validate_cidr'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().isCIDR()
@@ -180,7 +180,7 @@ exports['test_swiz_cidr'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_alpha'] = function(test, assert) {
+exports['test_validate_alpha'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().isAlpha()
@@ -201,7 +201,7 @@ exports['test_swiz_alpha'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_alphanumeric'] = function(test, assert) {
+exports['test_validate_alphanumeric'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().isAlphanumeric()
@@ -222,7 +222,7 @@ exports['test_swiz_alphanumeric'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_numeric'] = function(test, assert) {
+exports['test_validate_numeric'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().isNumeric()
@@ -243,7 +243,7 @@ exports['test_swiz_numeric'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_lowercase'] = function(test, assert) {
+exports['test_validate_lowercase'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().isLowercase()
@@ -264,7 +264,7 @@ exports['test_swiz_lowercase'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_uppercase'] = function(test, assert) {
+exports['test_validate_uppercase'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().isUppercase()
@@ -285,7 +285,7 @@ exports['test_swiz_uppercase'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_decimal'] = function(test, assert) {
+exports['test_validate_decimal'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().isDecimal()
@@ -306,7 +306,7 @@ exports['test_swiz_decimal'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_float'] = function(test, assert) {
+exports['test_validate_float'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().isFloat()
@@ -327,7 +327,7 @@ exports['test_swiz_float'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_notnull'] = function(test, assert) {
+exports['test_validate_notnull'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().notNull()
@@ -348,7 +348,7 @@ exports['test_swiz_notnull'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_notempty'] = function(test, assert) {
+exports['test_validate_notempty'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().notEmpty()
@@ -369,7 +369,7 @@ exports['test_swiz_notempty'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_regex'] = function(test, assert) {
+exports['test_validate_regex'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().regex('^a$')
@@ -390,7 +390,7 @@ exports['test_swiz_regex'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_notregex'] = function(test, assert) {
+exports['test_validate_notregex'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().notRegex(/e/)
@@ -406,7 +406,7 @@ exports['test_swiz_notregex'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_len'] = function(test, assert) {
+exports['test_validate_len'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().len(1)
@@ -427,7 +427,7 @@ exports['test_swiz_len'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_null'] = function(test, assert) {
+exports['test_validate_null'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().isNull()
@@ -448,7 +448,7 @@ exports['test_swiz_null'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_equals'] = function(test, assert) {
+exports['test_validate_equals'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().equals(123)
@@ -469,7 +469,7 @@ exports['test_swiz_equals'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_present'] = function(test, assert) {
+exports['test_validate_present'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().notEmpty()
@@ -479,18 +479,18 @@ exports['test_swiz_present'] = function(test, assert) {
   var obj = { a: 123};
   var obj_ext = { a: 123, b: 2 };
   rv = swiz.check(schema, obj_ext);
-  assert.ok(rv.is_valid === true, 'swiz present');
+  assert.ok(rv.is_valid === true, 'validate present');
   assert.deepEqual(rv.cleaned, obj);
 
   // negative case
   var neg = { b: 2 };
   rv = swiz.check(schema, neg);
-  assert.ok(rv.is_valid === false, 'swiz (negative case)');
+  assert.ok(rv.is_valid === false, 'validate (negative case)');
 
   test.finish();
 };
 
-exports['test_swiz_contains'] = function(test, assert) {
+exports['test_validate_contains'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().contains('abc')
@@ -511,7 +511,7 @@ exports['test_swiz_contains'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_not_contains'] = function(test, assert) {
+exports['test_validate_not_contains'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().notContains('abc')
@@ -532,7 +532,7 @@ exports['test_swiz_not_contains'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_chain'] = function(test, assert) {
+exports['test_validate_chain'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().len(1).isNumeric()
@@ -556,7 +556,7 @@ exports['test_swiz_chain'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_nested'] = function(test, assert) {
+exports['test_validate_nested'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().array(new swiz.Valve().isInt().toInt())
@@ -573,7 +573,7 @@ exports['test_swiz_nested'] = function(test, assert) {
 };
 
 
-exports['test_swiz_tofloat'] = function(test, assert) {
+exports['test_validate_tofloat'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().array(new swiz.Valve().toFloat())
@@ -591,7 +591,7 @@ exports['test_swiz_tofloat'] = function(test, assert) {
 };
 
 
-exports['test_swiz_string'] = function(test, assert) {
+exports['test_validate_string'] = function(test, assert) {
   var rv, obj, obj_ext;
   var schema = {
     a: new swiz.Valve().string()
@@ -614,7 +614,7 @@ exports['test_swiz_string'] = function(test, assert) {
 };
 
 
-exports['test_swiz_nested_array'] = function(test, assert) {
+exports['test_validate_nested_array'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().array(new swiz.Valve().string())
@@ -630,7 +630,7 @@ exports['test_swiz_nested_array'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_nested_hash'] = function(test, assert) {
+exports['test_validate_nested_hash'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().hash(new swiz.Valve().string(), new swiz.Valve().string())
@@ -646,7 +646,25 @@ exports['test_swiz_nested_hash'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_swiz_range'] = function(test, assert) {
+
+exports['test_validate_enum'] = function(test, assert) {
+  var rv;
+  var schema = {
+    a: new swiz.Valve().enumerated({inactive: 0, active: 1, full_no_new_checks: 2})
+  };
+
+  // positive case
+  var obj = { a: 2 };
+  var obj_ext = { a: 'full_no_new_checks', b: 2 };
+  rv = swiz.check(schema, obj_ext);
+  assert.ok(rv.is_valid === true, 'enum test');
+  assert.deepEqual(rv.cleaned, obj);
+
+  test.finish();
+};
+
+
+exports['test_validate_range'] = function(test, assert) {
   var rv;
   var schema = {
     a: new swiz.Valve().range(1, 65535)
