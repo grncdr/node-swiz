@@ -31,6 +31,7 @@ var def = {
     ['agent_name' , {'type': 'string'}],
     ['ipaddress' , {'src' : 'get_public_address', 'type' : 'ip'}],
     ['public_ips' , {'cache_key' : 'node_addrs_public', 'type' : 'list<ip>'}],
+    ['state', {'enumerated' : {inactive: 0, active: 1, full_no_new_checks: 2}}],
     ['opts', {'src': 'options', 'type': 'map<string, NodeOpts>'}]
   ],
   'NodeOpts': [
@@ -49,6 +50,7 @@ function Node(options) {
   this.active = true;
   this.agent_name = 'gl<ah';
   this.public_ips = ['123.45.55.44', '122.123.32.2'];
+  this.state = 1;
 
   if (options) {
     this.options = options;
@@ -111,6 +113,7 @@ exports['test_serial_xml'] = function(test, assert) {
             'agent_name><ipaddress>123.33.22.1</ipaddress>' +
             '<public_ips>123.45.55.44</public_ips>' +
             '<public_ips>122.123.32.2</public_ips>' +
+            '<state>active</state>' +
             '<opts><NodeOpts>' +
             '<opt1>defaultval</opt1>' +
             '<opt2>defaultval</opt2>' +
@@ -135,7 +138,7 @@ exports['test_serial_json'] = function(test, assert) {
         assert.deepEqual(rep.agent_name, 'gl<ah');
         assert.deepEqual(rep.ipaddress, '123.33.22.1');
         assert.deepEqual(rep.public_ips, ['123.45.55.44', '122.123.32.2']);
-
+        assert.deepEqual(rep.state, 'active');
         test.finish();
       }
   );
@@ -158,6 +161,7 @@ exports['test_serial_array_xml'] = function(test, assert) {
             'agent_name><ipaddress>123.33.22.1</ipaddress>' +
             '<public_ips>123.45.55.44</public_ips>' +
             '<public_ips>122.123.32.2</public_ips>' +
+            '<state>active</state>' +
             '<opts><NodeOpts>' +
             '<opt1>defaultval</opt1><opt2>defaultval</opt2>' +
             '</NodeOpts></opts></Node>' +
@@ -166,6 +170,7 @@ exports['test_serial_array_xml'] = function(test, assert) {
             'agent_name><ipaddress>123.33.22.1</ipaddress>' +
             '<public_ips>123.45.55.44</public_ips>' +
             '<public_ips>122.123.32.2</public_ips>' +
+            '<state>active</state>' +
             '<opts><NodeOpts>' +
             '<opt1>defaultval</opt1><opt2>defaultval</opt2>' +
             '</NodeOpts></opts></Node></group>');
@@ -208,6 +213,7 @@ exports['test_serial_array_json'] = function(test, assert) {
         assert.deepEqual(rep[0].ipaddress, '123.33.22.1');
         assert.deepEqual(rep[0].public_ips,
             ['123.45.55.44', '122.123.32.2']);
+        assert.deepEqual(rep[0].state, 'active');
         assert.deepEqual(rep[1].id, 444);
         assert.deepEqual(rep[1].is_active, true);
         assert.deepEqual(rep[1].name, 'gggggg');
@@ -215,7 +221,7 @@ exports['test_serial_array_json'] = function(test, assert) {
         assert.deepEqual(rep[1].ipaddress, '123.33.22.1');
         assert.deepEqual(rep[1].public_ips,
             ['123.45.55.44', '122.123.32.2']);
-
+        assert.deepEqual(rep[1].state, 'active');
         test.finish();
       }
   );
