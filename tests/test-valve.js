@@ -729,7 +729,7 @@ exports['test_nested_schemas'] = function(test, assert) {
   assert.ok(rv.is_valid === true, 'optional fields');
   assert.deepEqual(rv.cleaned, obj);
 
-  // positive case
+  // negative case
   obj = { a: { b: 65536} };
   obj_ext = { a: { b: 65536}, b: 2 };
   rv = swiz.check(schema, obj_ext);
