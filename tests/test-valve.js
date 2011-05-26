@@ -686,3 +686,34 @@ exports['test_validate_range'] = function(test, assert) {
 
   test.finish();
 };
+
+exports['test_optional_fields'] = function(test, assert) {
+  var rv;
+  var schema = {
+    a: new swiz.Valve().optional().range(1, 65535)
+  };
+
+  // positive case
+  var obj = { a: 500 };
+  var obj_ext = { a: 500, b: 2 };
+  rv = swiz.check(schema, obj_ext);
+  assert.ok(rv.is_valid === true, 'optional fields');
+  assert.deepEqual(rv.cleaned, obj);
+
+  // positive case
+  var obj = { a: null };
+  var obj_ext = { a: null, b: 2 };
+  rv = swiz.check(schema, obj_ext);
+  assert.ok(rv.is_valid === true, 'optional fields (optional)');
+  assert.deepEqual(rv.cleaned, obj);
+
+
+  // negative case
+  obj = { a: 65536 };
+  obj_ext = { a: 65536, b: 2 };
+  rv = swiz.check(schema, obj_ext);
+  console.log(rv);
+  assert.ok(rv.is_valid === false, 'optional fields');
+
+  test.finish();
+};
