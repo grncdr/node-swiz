@@ -11,6 +11,6 @@ export NODE_PATH = lib/
 default: test
 
 test:
-	${WHISKEY} --tests "${TESTS}"
+	${WHISKEY} --print-stdout --print-stderr --tests "${TESTS}"
 
 .PHONY: default test
