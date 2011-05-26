@@ -99,6 +99,29 @@ exports['test_xml_escape_string'] = function(test, assert) {
 };
 
 
+exports['test_build_object'] = function(test, assert) {
+  var blahnode = new Node();
+  var sw = new swiz.Swiz(def);
+  sw.buildObject(blahnode, function(err, result) {
+    assert.ifError(err);
+    assert.deepEqual(result, {
+      id: 15245,
+      is_active: true,
+      name: 'gggggg',
+      agent_name: 'gl<ah',
+      ipaddress: '123.33.22.1',
+      public_ips: ['123.45.55.44', '122.123.32.2'],
+      opts: {
+        opt1: 'defaultval',
+        opt2: 'defaultval'
+      },
+      state: 'active'
+    });
+    test.finish();
+  });
+};
+
+
 exports['test_serial_xml'] = function(test, assert) {
   var blahnode = new Node();
   var sw = new swiz.Swiz(def);
@@ -138,6 +161,10 @@ exports['test_serial_json'] = function(test, assert) {
         assert.deepEqual(rep.agent_name, 'gl<ah');
         assert.deepEqual(rep.ipaddress, '123.33.22.1');
         assert.deepEqual(rep.public_ips, ['123.45.55.44', '122.123.32.2']);
+        assert.deepEqual(rep.opts, {
+          opt1: 'defaultval',
+          opt2: 'defaultval'
+        });
         assert.deepEqual(rep.state, 'active');
         test.finish();
       }
@@ -213,6 +240,10 @@ exports['test_serial_array_json'] = function(test, assert) {
         assert.deepEqual(rep[0].ipaddress, '123.33.22.1');
         assert.deepEqual(rep[0].public_ips,
             ['123.45.55.44', '122.123.32.2']);
+        assert.deepEqual(rep[0].opts, {
+          opt1: 'defaultval',
+          opt2: 'defaultval'
+        });
         assert.deepEqual(rep[0].state, 'active');
         assert.deepEqual(rep[1].id, 444);
         assert.deepEqual(rep[1].is_active, true);
@@ -221,6 +252,10 @@ exports['test_serial_array_json'] = function(test, assert) {
         assert.deepEqual(rep[1].ipaddress, '123.33.22.1');
         assert.deepEqual(rep[1].public_ips,
             ['123.45.55.44', '122.123.32.2']);
+        assert.deepEqual(rep[1].opts, {
+          opt1: 'defaultval',
+          opt2: 'defaultval'
+        });
         assert.deepEqual(rep[1].state, 'active');
         test.finish();
       }
