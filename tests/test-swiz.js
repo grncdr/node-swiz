@@ -32,7 +32,8 @@ var def = {
     ['ipaddress' , {'src' : 'get_public_address', 'type' : 'ip'}],
     ['public_ips' , {'cache_key' : 'node_addrs_public', 'type' : 'list<ip>'}],
     ['state', {'enumerated' : {inactive: 0, active: 1, full_no_new_checks: 2}}],
-    ['opts', {'src': 'options', 'type': 'NodeOpts'}]
+    ['opts', {'src': 'options', 'type': 'NodeOpts'}],
+    ['data', {'src': 'data', 'type': 'map<string, object>'}]
   ],
   'NodeOpts': [
     ['option1', {'src': 'opt1', 'type': 'string'}],
@@ -62,6 +63,11 @@ function Node() {
 
   this.options.getSerializerType = function() {
     return 'NodeOpts';
+  };
+
+  this.data = {
+    'foo': 'thingone',
+    'bar': 'thingtwo'
   };
 }
 
@@ -115,6 +121,10 @@ exports['test_build_object'] = function(test, assert) {
         option2: 'defaultval',
         option3: 'something'
       },
+      data: {
+        foo: 'thingone',
+        bar: 'thingtwo'
+      },
       state: 'active'
     });
     test.finish();
@@ -141,7 +151,8 @@ exports['test_serial_xml'] = function(test, assert) {
             '<option1>defaultval</option1>' +
             '<option2>defaultval</option2>' +
             '<option3>something</option3>' +
-            '</NodeOpts></opts></Node>');
+            '</NodeOpts></opts>' +
+            '<data><foo>thingone</foo><bar>thingtwo</bar></data></Node>');
 
         test.finish();
       }
@@ -166,6 +177,10 @@ exports['test_serial_json'] = function(test, assert) {
           option1: 'defaultval',
           option2: 'defaultval',
           option3: 'something'
+        });
+        assert.deepEqual(rep.data, {
+          foo: 'thingone',
+          bar: 'thingtwo'
         });
         assert.deepEqual(rep.state, 'active');
         test.finish();
@@ -193,7 +208,8 @@ exports['test_serial_array_xml'] = function(test, assert) {
             '<state>active</state>' +
             '<opts><NodeOpts>' +
             '<option1>defaultval</option1><option2>defaultval</option2>' +
-            '<option3>something</option3></NodeOpts></opts></Node>' +
+            '<option3>something</option3></NodeOpts></opts>' +
+            '<data><foo>thingone</foo><bar>thingtwo</bar></data></Node>' +
             '<Node><id>444</id><is_active>true</' +
             'is_active><name>gggggg</name><agent_name>your mom</' +
             'agent_name><ipaddress>123.33.22.1</ipaddress>' +
@@ -202,7 +218,9 @@ exports['test_serial_array_xml'] = function(test, assert) {
             '<state>active</state>' +
             '<opts><NodeOpts>' +
             '<option1>defaultval</option1><option2>defaultval</option2>' +
-            '<option3>something</option3></NodeOpts></opts></Node></group>');
+            '<option3>something</option3></NodeOpts></opts>' +
+            '<data><foo>thingone</foo><bar>thingtwo</bar></data></Node>' +
+            '</group>');
 
         test.finish();
       }
@@ -247,6 +265,10 @@ exports['test_serial_array_json'] = function(test, assert) {
           option2: 'defaultval',
           option3: 'something'
         });
+        assert.deepEqual(rep[0].data, {
+          foo: 'thingone',
+          bar: 'thingtwo'
+        });
         assert.deepEqual(rep[0].state, 'active');
         assert.deepEqual(rep[1].id, 444);
         assert.deepEqual(rep[1].is_active, true);
@@ -259,6 +281,10 @@ exports['test_serial_array_json'] = function(test, assert) {
           option1: 'defaultval',
           option2: 'defaultval',
           option3: 'something'
+        });
+        assert.deepEqual(rep[1].data, {
+          foo: 'thingone',
+          bar: 'thingtwo'
         });
         assert.deepEqual(rep[1].state, 'active');
         test.finish();
