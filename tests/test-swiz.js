@@ -52,6 +52,7 @@ function Node() {
   this.active = true;
   this.agent_name = 'gl<ah';
   this.public_ips = ['123.45.55.44', '122.123.32.2'];
+  this.public_address = '123.33.22.1';
   this.state = 1;
   this.options = {
     'opt1': 'defaultval',
@@ -86,7 +87,7 @@ Node.prototype.get_name = function(callback) {
  * @param {function(*,*)} callback junk.
 */
 Node.prototype.get_public_address = function(callback) {
-  callback(null, '123.33.22.1');
+  callback(null, this.public_address);
 };
 
 
