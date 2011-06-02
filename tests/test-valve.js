@@ -880,7 +880,7 @@ exports['test_validate_toBooleanStrict'] = function(test, assert) {
     assert.ifError(err);
     assert.deepEqual(cleaned, obj, 'toBooleanStrict test 3');
   });
-  
+
   obj = { a: true };
   obj_ext = { a: 'true', b: 2 };
   v.check(obj_ext, function(err, cleaned) {
@@ -1267,7 +1267,7 @@ exports['test_partial'] = function(test, assert) {
 
 exports['test_custom'] = function(test, assert) {
   var description = 'Is the meaning of life';
-  V.addValidator('isMeaningOfLife', 
+  V.addValidator('isMeaningOfLife',
                  description,
                  function(value, callback) {
                    if (value == 42) {
@@ -1295,6 +1295,21 @@ exports['test_custom'] = function(test, assert) {
     assert.deepEqual(err.message, 'incorrect value', 'custom test (negative case)');
   });
 
+  assert.throws(function() {
+                  var v = new V({
+                    a: C().custom('bogus')
+                  });
+                },
+                /Unknown validator name/,
+                'custom test (unknown validator)');
+
+  assert.throws(function() {
+                  var v = new V({
+                    a: C().custom()
+                  });
+                },
+                /Missing/,
+                'custom test (missing validator)');
+
   test.finish();
 };
-
