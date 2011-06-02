@@ -4,8 +4,9 @@ TESTS := \
 	tests/test-valve.js \
 	tests/test-swiz.js
 
-# Hint: Prepend './node_modules/.bin' to your PATH if Whiskey is installed locally
-WHISKEY := $(shell bash -c 'type -p whiskey')
+PATH := ./node_modules/.bin:$(PATH)
+
+WHISKEY := $(shell bash -c 'PATH=$(PATH) type -p whiskey')
 
 export NODE_PATH = lib/
 

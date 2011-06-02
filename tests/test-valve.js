@@ -1264,3 +1264,37 @@ exports['test_partial'] = function(test, assert) {
 
   test.finish();
 };
+
+exports['test_custom'] = function(test, assert) {
+  var description = 'Is the meaning of life';
+  V.addValidator('isMeaningOfLife', 
+                 description,
+                 function(value, callback) {
+                   if (value == 42) {
+                     callback(null, 'forty-two');
+                   } else {
+                     callback('incorrect value');
+                   }
+                 });
+
+  var v = new V({
+    a: C().custom('isMeaningOfLife')
+  });
+  var obj = { a: 'forty-two' };
+  var obj_ext = { a: 42, b: 'foo' };
+
+  assert.deepEqual(v.help().a[0], description, 'custom help');
+
+  v.check(obj_ext, function(err, cleaned) {
+      assert.ifError(err);
+      assert.deepEqual(cleaned, obj, 'custom test');
+  });
+
+  var neg = { a: 43 };
+  v.check(neg, function(err, cleaned) {
+    assert.deepEqual(err.message, 'incorrect value', 'custom test (negative case)');
+  });
+
+  test.finish();
+};
+
