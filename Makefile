@@ -4,7 +4,8 @@ TESTS := \
 	tests/test-valve.js \
 	tests/test-swiz.js
 
-WHISKEY := $(shell test -x whiskey && echo whiskey || echo node_modules/.bin/whiskey )
+# Hint: Prepend './node_modules/.bin' to your PATH if Whiskey is installed locally
+WHISKEY := $(shell bash -c 'type -p whiskey')
 
 export NODE_PATH = lib/
 
