@@ -1318,17 +1318,17 @@ exports['test_custom'] = function(test, assert) {
 // Mock set of serialization defs
 var def = {
   'Node' : [
-    ['id' , {'type' : 'string',
+    ['id' , {'src' : 'hash_id', 'type' : 'string',
       'desc' : 'hash ID for the node',
       'val' : C().isString()}],
-    ['is_active' , {'type' : 'bool',
+    ['is_active' , {'src' : 'active', 'type' : 'bool',
       'desc' : 'is the node active?',
       'val' : C().toBoolean()}],
-    ['name' , {'type' : 'string', 'desc' : 'name' ,
+    ['name' , {'src' : 'get_name', 'type' : 'string', 'desc' : 'name' ,
       'val' : C().isString()}],
     ['agent_name' , {'type': 'string',
       'val' : C().isString()}],
-    ['ipaddress' , {'type' : 'ip',
+    ['ipaddress' , {'src' : 'get_public_address', 'type' : 'ip',
       'val' : C().isIP()}]
   ],
   'NodeOpts': [
@@ -1376,7 +1376,7 @@ exports['test_schema_translation'] = function(test, assert) {
   
 };
 
-exports['test_roundtrip_swiz_valve_json'] = function(test, assert) {
+exports['test_roundtrip_swiz_valve'] = function(test, assert) {
   var validity = swiz.defToValve(def),
       v = new V(validity.Node),
       obj, sw = new swiz.Swiz(def);
@@ -1388,8 +1388,12 @@ exports['test_roundtrip_swiz_valve_json'] = function(test, assert) {
     sw.serialize(swiz.SERIALIZATION.SERIALIZATION_JSON, 1, obj,
       function(err, results) {
         assert.ifError(err);
-        assert.deepEqual(JSON.parse(results),exampleNode,'Round trip swiz/valve test');
+        console.log(results);
+        console.log(exampleNode);
+        assert.deepEqual(results,exampleNode,'Round trip swiz/valve test');
         test.finish();
     });
   });
+  
+
 };
