@@ -1313,3 +1313,65 @@ exports['test_custom'] = function(test, assert) {
 
   test.finish();
 };
+
+
+// Mock set of serialization defs
+var def = {
+  'Node' : [
+    ['id' , {'src' : 'hash_id', 'type' : 'string',
+      'desc' : 'hash ID for the node',
+      'val' : C().isString()}],
+    ['is_active' , {'src' : 'active', 'type' : 'bool',
+      'desc' : 'is the node active?',
+      'val' : C().toBoolean()}],
+    ['name' , {'src' : 'get_name', 'type' : 'string', 'desc' : 'name' ,
+      'val' : C().isString()}],
+    ['agent_name' , {'type': 'string',
+      'val' : C().isString()}],
+    ['ipaddress' , {'src' : 'get_public_address', 'type' : 'ip',
+      'val' : C().isIP()}]
+  ],
+  'NodeOpts': [
+    ['option1', {'src': 'opt1', 'type': 'string',
+      'val' : C().isString()}],
+    ['option2', {'src': 'opt2', 'type': 'string',
+      'val' : C().isString()}],
+    ['option3', {'src': 'opt3', 'type': 'string',
+      'val' : C().isString()}]
+  ]
+};
+
+var exampleNode = {
+  'id' : 'xkCD366',
+  'is_active' : true,
+  'name' : 'exmample',
+  'agent_name' : 'your mom',
+  'ipaddress' : '42.24.42.24'
+}
+
+
+var badExampleNode = {
+  'id' : 'xkCD366',
+  'is_active' : true,
+  'name' : 'exmample',
+  'agent_name' : 'your mom',
+  'ipaddress' : '42'
+}
+
+exports['test_schema_translation'] = function(test, assert) {
+  var validity = swiz.defToValve(def),
+      v = new V(validity.Node);
+  assert.isDefined(validity.Node);
+  assert.isDefined(validity.NodeOpts);
+  
+  v.check(exampleNode, function(err, cleaned) {
+    assert.ifError(err);
+    assert.deepEqual(cleaned, exampleNode, 'schema translation');
+    v.check(badExampleNode, function(err, cleaned) {
+      assert.deepEqual(err.message, 'Invalid IP', 
+        'schama translation failure');
+      test.finish();
+    });
+  });
+  
+};
