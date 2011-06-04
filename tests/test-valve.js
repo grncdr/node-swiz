@@ -1347,8 +1347,15 @@ var exampleNode = {
   'name' : 'exmample',
   'agent_name' : 'your mom',
   'ipaddress' : '42.24.42.24'
-}
+};
 
+var compNode = { 
+  'hash_id' : 'xkCD366',
+  'active' : true,
+  'get_name' : 'exmample',
+  'agent_name' : 'your mom',
+  'get_public_address' : '42.24.42.24'
+};
 
 var badExampleNode = {
   'id' : 'xkCD366',
@@ -1356,7 +1363,7 @@ var badExampleNode = {
   'name' : 'exmample',
   'agent_name' : 'your mom',
   'ipaddress' : '42'
-}
+};
 
 exports['test_schema_translation'] = function(test, assert) {
   var validity = swiz.defToValve(def),
@@ -1366,7 +1373,7 @@ exports['test_schema_translation'] = function(test, assert) {
   
   v.check(exampleNode, function(err, cleaned) {
     assert.ifError(err);
-    assert.deepEqual(cleaned, exampleNode, 'schema translation');
+    assert.deepEqual(cleaned, compNode, 'schema translation');
     v.check(badExampleNode, function(err, cleaned) {
       assert.deepEqual(err.message, 'Invalid IP', 
         'schama translation failure');
@@ -1388,9 +1395,7 @@ exports['test_roundtrip_swiz_valve'] = function(test, assert) {
     sw.serialize(swiz.SERIALIZATION.SERIALIZATION_JSON, 1, obj,
       function(err, results) {
         assert.ifError(err);
-        console.log(results);
-        console.log(exampleNode);
-        assert.deepEqual(results,exampleNode,'Round trip swiz/valve test');
+        assert.deepEqual(JSON.parse(results),exampleNode,'Round trip swiz/valve test');
         test.finish();
     });
   });
