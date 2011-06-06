@@ -1,13 +1,14 @@
 {
-  "author": "Rackspace, Inc.",
+  "author": "Rackspace US, Inc.",
   "contributors": [
+    "Michael S. Fischer <michael.fischer@rackspace.com>",
     "Ken Wronkiewicz <ken.wronkiewicz@rackspace.com>",
     "Ryan Phillips <ryan.phillips@rackspace.com>",
     "Russell Haering <russell.haering@rackspace.com>"
   ],
   "name": "swiz",
   "description": "Serilization and Validation Framework for objects in RESTful APIs",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "homepage": "https://github.com/racker/node-swiz",
   "repository": {
     "type": "git",
