@@ -1,15 +1,19 @@
-var validate = require('swiz');
-var V = require('swiz').V;
+var Swiz = require('swiz').Swiz;
+var Valve = require('swiz').Valve;
+var Chain = require('swiz').Chain;
+var defToValve = require('swiz').defToValve;
 
 // Note: There's one set of definitions that control both serialization
 // and validation
 var def = {
 'Node': [
-  ['key', {'val' : new V()}],
-  ['ip_address_v4', {'val' : new V().isIP()}]
+  ['key', {'val' : new Chain()}],
+  ['ip_address_v4', {'val' : new Chain().isIP()}]
 ]};
 
-var validity = validate.defToValve(def);
+var validity = defToValve(def);
+var schema = validity.Node;
+var v = new Valve(schema);
 
 // Generic payload
 var CreatePayload = {
@@ -18,18 +22,19 @@ var CreatePayload = {
 };
 
 console.log('validate a payload:\n');
+
 // Validate the generic payload
-var rv = validate.check(validity['Node'], CreatePayload);
-
-console.log(rv);
-
-console.log('\n\nserialize an object\n');
-var sw = new validate.Swiz(def);
-
-var obj = rv.cleaned;
-obj.getSerializerType = function() {return 'Node';};
-
-sw.serialize(validate.SERIALIZATION.SERIALIZATION_JSON, 1, obj,
-  function(err, results) {
-    console.log(results);
-  });
+v.check(CreatePayload, function(cleaned, err) {
+  var swiz = new Swiz(def);
+  if (err) {
+    console.error(err);
+  } else {
+    console.log('\n\nserialize an object\n');
+    cleaned.getSerializerType = function() {return 'Node';};
+    sw.serialize(validate.SERIALIZATION.SERIALIZATION_JSON, 1, cleaned,
+      function(err, results) {
+        console.log(results);
+      }
+    );
+  }
+});

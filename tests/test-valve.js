@@ -1380,7 +1380,6 @@ exports['test_schema_translation'] = function(test, assert) {
       test.finish();
     });
   });
-  
 };
 
 exports['test_roundtrip_swiz_valve'] = function(test, assert) {
@@ -1399,6 +1398,4 @@ exports['test_roundtrip_swiz_valve'] = function(test, assert) {
         test.finish();
     });
   });
-  
-
 };

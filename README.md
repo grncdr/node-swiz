@@ -1,8 +1,9 @@
 node-swiz
 ====================
 
-node-swiz is a [Node.js](http://nodejs.org) Serialization and Validation framework, intended to be used
-with RESTful APIs, which commonly use XML and JSON as transports.
+node-swiz is a [node.js](http://nodejs.org) serialization and validation
+framework intended to be used with RESTful APIs which commonly use XML and
+JSON as transports.
 
 License
 ====================
