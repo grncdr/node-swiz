@@ -1348,7 +1348,7 @@ exports['test_final'] = function(test, assert) {
       assert.ifError(err);
       assert.deepEqual(cleaned, obj, 'final validator test 2');
   });
-  
+
   obj = { v4: '1.2.3.4', v6: '1.2.3.4' };
   obj_ext = { v4: '1.2.3.4', v6: '1.2.3.4', b: 'foo' };
 
@@ -1359,8 +1359,8 @@ exports['test_final'] = function(test, assert) {
 
   var neg = { b: 'foo' };
   v.check(neg, function(err, cleaned) {
-    assert.deepEqual(err.message, 
-                     'At least one of v4 or v6 must be specified', 
+    assert.deepEqual(err.message,
+                     'At least one of v4 or v6 must be specified',
                      'final validator test (negative case)');
   });
 
@@ -1402,7 +1402,7 @@ var exampleNode = {
   'ipaddress' : '42.24.42.24'
 };
 
-var compNode = { 
+var compNode = {
   'hash_id' : 'xkCD366',
   'active' : true,
   'get_name' : 'exmample',
@@ -1423,12 +1423,12 @@ exports['test_schema_translation'] = function(test, assert) {
       v = new V(validity.Node);
   assert.isDefined(validity.Node);
   assert.isDefined(validity.NodeOpts);
-  
+
   v.check(exampleNode, function(err, cleaned) {
     assert.ifError(err);
     assert.deepEqual(cleaned, compNode, 'schema translation');
     v.check(badExampleNode, function(err, cleaned) {
-      assert.deepEqual(err.message, 'Invalid IP', 
+      assert.deepEqual(err.message, 'Invalid IP',
         'schama translation failure');
       test.finish();
     });
@@ -1439,7 +1439,7 @@ exports['test_roundtrip_swiz_valve'] = function(test, assert) {
   var validity = swiz.defToValve(def),
       v = new V(validity.Node),
       obj, sw = new swiz.Swiz(def);
-        
+
   v.check(exampleNode, function(err, cleaned) {
     assert.ifError(err);
     obj = cleaned;
