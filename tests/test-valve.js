@@ -1267,7 +1267,7 @@ exports['test_partial'] = function(test, assert) {
 
 exports['test_custom'] = function(test, assert) {
   var description = 'Is the meaning of life';
-  V.addValidator('isMeaningOfLife',
+  V.addChainValidator('isMeaningOfLife',
                  description,
                  function(value, callback) {
                    if (value == 42) {
@@ -1310,6 +1310,59 @@ exports['test_custom'] = function(test, assert) {
                 },
                 /Missing/,
                 'custom test (missing validator)');
+
+  test.finish();
+};
+
+
+exports['test_final'] = function(test, assert) {
+  var v,
+      finalValidator;
+
+  v = new V({
+    v4: C().optional(),
+    v6: C().optional()
+  });
+
+  finalValidator = function(obj, callback) {
+    if ((! obj.v4) && (! obj.v6)) {
+      callback('At least one of v4 or v6 must be specified');
+    } else
+      callback(null, obj);
+  };
+
+  v.addFinalValidator(finalValidator);
+
+  var obj = { v4: '1.2.3.4' };
+  var obj_ext = { v4: '1.2.3.4', b: 'foo' };
+
+  v.check(obj_ext, function(err, cleaned) {
+      assert.ifError(err);
+      assert.deepEqual(cleaned, obj, 'final validator test 1');
+  });
+
+  obj = { v6: '1.2.3.4' };
+  obj_ext = { v6: '1.2.3.4', b: 'foo' };
+
+  v.check(obj_ext, function(err, cleaned) {
+      assert.ifError(err);
+      assert.deepEqual(cleaned, obj, 'final validator test 2');
+  });
+  
+  obj = { v4: '1.2.3.4', v6: '1.2.3.4' };
+  obj_ext = { v4: '1.2.3.4', v6: '1.2.3.4', b: 'foo' };
+
+  v.check(obj_ext, function(err, cleaned) {
+      assert.ifError(err);
+      assert.deepEqual(cleaned, obj, 'final validator test 3');
+  });
+
+  var neg = { b: 'foo' };
+  v.check(neg, function(err, cleaned) {
+    assert.deepEqual(err.message, 
+                     'At least one of v4 or v6 must be specified', 
+                     'final validator test (negative case)');
+  });
 
   test.finish();
 };
