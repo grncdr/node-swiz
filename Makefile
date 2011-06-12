@@ -8,11 +8,14 @@ PATH := ./node_modules/.bin:$(PATH)
 
 WHISKEY := $(shell bash -c 'PATH=$(PATH) type -p whiskey')
 
-export NODE_PATH = lib/
+export NODE_PATH = /Users/chip/work/ck/node-swiz/lib/
 
 default: test
 
 test:
-	${WHISKEY} --print-stdout --print-stderr --tests "${TESTS}"
+	${WHISKEY}  --scope-leaks --print-stdout --print-stderr --tests "${TESTS}"
 
-.PHONY: default test
+coverage:
+	${WHISKEY}  --scope-leaks --print-stdout --print-stderr  --coverage  --coverage-reporter html --coverage-dir coverage_html --tests "${TESTS}"
+
+.PHONY: default test coverage
