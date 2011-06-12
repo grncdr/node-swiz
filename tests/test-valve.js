@@ -16,120 +16,172 @@
  */
 
 var swiz = require('swiz');
+var async = require('async');
 var V = swiz.Valve;
 var C = swiz.Chain;
 
 exports['test_validate_int'] = function(test, assert) {
   var v = new V({
-    a: C().isInt()
-  });
+        a: C().isInt()
+      }),
+      obj,
+      obj_ext,
+      neg;
 
-  // positive case
-  var obj = { a: 1 };
-  var obj_ext = { a: 1, b: 2 };
-  v.check(obj_ext, function(err, cleaned) {
-    assert.ifError(err);
-    assert.deepEqual(cleaned, obj, 'integer test');
-  });
-
-  obj = { a: '1' };
-  obj_ext = { a: '1', b: 2 };
-  v.check(obj_ext, function(err, cleaned) {
-    assert.ifError(err);
-    assert.deepEqual(cleaned, obj, 'integer test 2');
-  });
-
-  obj = { a: -17 };
-  obj_ext = { a: -17, b: 2 };
-  v.check(obj_ext, function(err, cleaned) {
-    assert.ifError(err);
-    assert.deepEqual(cleaned, obj, 'integer test 3');
-  });
-
-  // negative case
-  var neg = { a: 'test' };
-  v.check(neg, function(err, cleaned) {
-    assert.deepEqual(err.message, 'Invalid integer', 'integer test (negative case)');
-  });
-
-  test.finish();
+  async.parallel([
+    function(callback) {
+      // positive case
+      obj = { a: 1 };
+      obj_ext = { a: 1, b: 2 };
+      v.check(obj_ext, function(err, cleaned) {
+        assert.ifError(err);
+        assert.deepEqual(cleaned, obj, 'integer test');
+        callback();
+      });
+    },
+    function(callback) {
+      obj = { a: '1' };
+      obj_ext = { a: '1', b: 2 };
+      v.check(obj_ext, function(err, cleaned) {
+        assert.ifError(err);
+        assert.deepEqual(cleaned, obj, 'integer test 2');
+        callback();
+      });
+    },
+    function(callback) {
+      obj = { a: -17 };
+      obj_ext = { a: -17, b: 2 };
+      v.check(obj_ext, function(err, cleaned) {
+        assert.ifError(err);
+        assert.deepEqual(cleaned, obj, 'integer test 3');
+        callback();
+      });
+    },
+    function(callback) {
+      var neg = { a: 'test' };
+      v.check(neg, function(err, cleaned) {
+        assert.deepEqual(err.message, 'Invalid integer', 'integer test (negative case)');
+        callback();
+      });
+    }],
+    function(err, results) {
+      test.finish();
+    }
+  );
 };
 
 
 exports['test_validate_email'] = function(test, assert) {
   var v = new V({
-    a: C().isEmail()
-  });
+        a: C().isEmail()
+      }),
+      // positive case
+      obj = { a: 'test@cloudkick.com' },
+      obj_ext = { a: 'test@cloudkick.com', b: 2 },
+      neg = { a: 'invalidemail@' };
 
-  // positive case
-  var obj = { a: 'test@cloudkick.com' };
-  var obj_ext = { a: 'test@cloudkick.com', b: 2 };
-  v.check(obj_ext, function(err, cleaned) {
-    assert.ifError(err);
-    assert.deepEqual(cleaned, obj, 'email test');
-  });
-
-  // negative case
-  var neg = { a: 'invalidemail@' };
-  v.check(neg, function(err, cleaned) {
-    assert.deepEqual(err.message, 'Invalid email', 'integer test (negative case)');
-  });
-  test.finish();
+  async.parallel([
+    function(callback) {
+      v.check(obj_ext, function(err, cleaned) {
+        assert.ifError(err);
+        assert.deepEqual(cleaned, obj, 'email test');
+        callback();
+      });
+    },
+    function(callback) {
+      // negative case
+      v.check(neg, function(err, cleaned) {
+        assert.deepEqual(err.message, 'Invalid email', 'integer test (negative case)');
+        callback();
+      });
+    }],
+    function(err, results) {
+      test.finish();
+    }
+  );
 };
 
 exports['test_validate_url'] = function(test, assert) {
   var v = new V({
-    a: C().isUrl()
-  });
+        a: C().isUrl()
+      }),
+      obj,
+      obj_ext,
+      neg;
 
-  // positive case
-  var obj = { a: 'http://www.cloudkick.com' };
-  var obj_ext = { a: 'http://www.cloudkick.com', b: 2 };
-  v.check(obj_ext, function(err, cleaned) {
-    assert.ifError(err);
-    assert.deepEqual(cleaned, obj, 'URL test');
-  });
-
-  // negative case
-  var neg = { a: 'invalid/' };
-  v.check(neg, function(err, cleaned) {
-    assert.deepEqual(err.message, 'Invalid URL', 'URL test (negative case)');
-  });
-  test.finish();
+  async.series([
+    function(callback) {
+      // positive case
+      obj = { a: 'http://www.cloudkick.com' };
+      obj_ext = { a: 'http://www.cloudkick.com', b: 2 };
+      v.check(obj_ext, function(err, cleaned) {
+        assert.ifError(err);
+        assert.deepEqual(cleaned, obj, 'URL test');
+        callback();
+      });
+    },
+    function(callback) {
+      // negative case
+      neg = { a: 'invalid/' };
+      v.check(neg, function(err, cleaned) {
+        assert.deepEqual(err.message, 'Invalid URL', 'URL test (negative case)');
+        callback();
+      });
+    }],
+    function(err, results) {
+      test.finish();
+    }
+  );
 };
 
 exports['test_validate_ip'] = function(test, assert) {
   var v = new V({
-    a: C().isIP()
-  });
+        a: C().isIP()
+      }),
+      obj,
+      obj_ext,
+      neg;
 
-  // positive case
-  var obj = { a: '192.168.0.1' };
-  var obj_ext = { a: '192.168.0.1', b: 2 };
-  v.check(obj_ext, function(err, cleaned) {
-    assert.ifError(err);
-    assert.deepEqual(cleaned, obj, 'IP test');
-  });
-
-  // negative case
-  var neg = { a: 'invalid/' };
-  v.check(neg, function(err, cleaned) {
-    assert.deepEqual(err.message, 'Invalid IP', 'IP test (negative case)');
-  });
-
-  neg = {a: '12345' };
-  v.check(neg, function(err, cleaned) {
-    assert.deepEqual(err.message, 'Invalid IP', 'IP test (negative case 2)');
-  });
-
-  // IPv6 normalization
-  obj = { a: '2001:0db8:0000:0000:0001:0000:0000:0001' };
-  obj_ext = { a: '2001:db8::1:0:0:1'};
-  v.check(obj_ext, function(err, cleaned) {
-    assert.ifError(err);
-    assert.deepEqual(cleaned, obj, 'IPv6 test and normalization');
-  });
-  test.finish();
+  async.series([
+    function(callback) {
+      // positive case
+      obj = { a: '192.168.0.1' };
+      obj_ext = { a: '192.168.0.1', b: 2 };
+      v.check(obj_ext, function(err, cleaned) {
+        assert.ifError(err);
+        assert.deepEqual(cleaned, obj, 'IP test');
+        callback();
+      });
+    },
+    function(callback) {
+      // negative case
+      neg = { a: 'invalid/' };
+      v.check(neg, function(err, cleaned) {
+        assert.deepEqual(err.message, 'Invalid IP', 'IP test (negative case)');
+        callback();
+      });
+    },
+    function(callback) {
+      neg = {a: '12345' };
+      v.check(neg, function(err, cleaned) {
+        assert.deepEqual(err.message, 'Invalid IP', 'IP test (negative case 2)');
+        callback();
+      });
+    },
+    function(callback) {
+      // IPv6 normalization
+      obj = { a: '2001:0db8:0000:0000:0001:0000:0000:0001' };
+      obj_ext = { a: '2001:db8::1:0:0:1'};
+      v.check(obj_ext, function(err, cleaned) {
+        assert.ifError(err);
+        assert.deepEqual(cleaned, obj, 'IPv6 test and normalization');
+        callback();
+      });
+    }],
+    function (err, results) {
+      test.finish();
+    }
+  );
 };
 
 exports['test_validate_ip_blacklist'] = function(test, assert) {
@@ -213,24 +265,35 @@ exports['test_validate_cidr'] = function(test, assert) {
 
 exports['test_validate_alpha'] = function(test, assert) {
   var v = new V({
-    a: C().isAlpha()
-  });
+        a: C().isAlpha()
+      }),
+      obj,
+      obj_ext,
+      neg;
 
-  // positive case
-  var obj = { a: 'ABC' };
-  var obj_ext = { a: 'ABC', b: 2 };
-  v.check(obj_ext, function(err, cleaned) {
-    assert.ifError(err);
-    assert.deepEqual(cleaned, obj, 'alpha test');
-  });
-
-  // negative case
-  var neg = { a: 'invalid/' };
-  v.check(neg, function(err, cleaned) {
-    assert.deepEqual(err.message, 'Invalid characters', 'alpha test (negative case)');
-  });
-
-  test.finish();
+  async.parallel([
+    function (callback) {
+      // positive case
+      obj = { a: 'ABC' };
+      obj_ext = { a: 'ABC', b: 2 };
+      v.check(obj_ext, function(err, cleaned) {
+        assert.ifError(err);
+        assert.deepEqual(cleaned, obj, 'alpha test');
+        callback();
+      });
+    },
+    function(callback) {
+      // negative case
+      neg = { a: 'invalid/' };
+      v.check(neg, function(err, cleaned) {
+        assert.deepEqual(err.message, 'Invalid characters', 'alpha test (negative case)');
+        callback();
+      });
+    }],
+    function(err, results) {
+      test.finish();
+    }
+  );
 };
 
 
