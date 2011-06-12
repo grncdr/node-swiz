@@ -18,7 +18,7 @@
 CIDR = require('cidr').CIDR;
 
 exports['test_cidr_v4'] = function(test, assert) {
-  c1 = new CIDR('192.169.0.1/29');
+  var c1 = new CIDR('192.169.0.1/29');
 
   assert.deepEqual(c1.v, 4);
   assert.deepEqual(c1.subnet, 29);
