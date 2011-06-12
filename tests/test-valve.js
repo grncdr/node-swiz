@@ -186,39 +186,54 @@ exports['test_validate_ip'] = function(test, assert) {
 
 exports['test_validate_ip_blacklist'] = function(test, assert) {
   var v = new V({
-    a: C().isIP().notIPBlacklisted()
-  });
+        a: C().isIP().notIPBlacklisted()
+      }),
+      obj_ext,
+      neg;
 
-  // positive case
-  var obj_ext = { a: '173.45.245.32', b: 2 };
-  v.check(obj_ext, function(err, cleaned) {
-    assert.ifError(err, 'IP blacklist test');
-  });
-
-  // negative case
-  var neg = { a: 'invalid/' };
-  v.check(neg, function(err, cleaned) {
-    assert.deepEqual(err.message, 'Invalid IP', 'IP test (negative case 2)');
-  });
-
-  neg = { a: '192.168.0.1' };
-  v.check(neg, function(err, cleaned) {
-    assert.deepEqual(err.message, 'IP is blacklisted', 'IP test (negative case 2)');
-  });
-
-  // IPv6
-  obj_ext = { a: '2001:db8::1:0:0:1'};
-  v.check(obj_ext, function(err, cleaned) {
-    assert.ifError(err, 'IPv6 blacklist test');
-  });
-
-  neg = {a: 'fc00:1:0:0:1' };
-  v.check(neg, function(err, cleaned) {
-    assert.deepEqual(err.message, 'Invalid IP', 'IP test (negative case 2)');
-  });
-
-
-  test.finish();
+  async.parallel([
+    function(callback) {
+      // positive case
+      obj_ext = { a: '173.45.245.32', b: 2 };
+      v.check(obj_ext, function(err, cleaned) {
+        assert.ifError(err, 'IP blacklist test');
+        callback();
+      });
+    },
+    function(callback) {
+      // negative case
+      var neg = { a: 'invalid/' };
+      v.check(neg, function(err, cleaned) {
+        assert.deepEqual(err.message, 'Invalid IP', 'IP test (negative case 2)');
+        callback();
+      });
+    },
+    function(callback) {
+      neg = { a: '192.168.0.1' };
+      v.check(neg, function(err, cleaned) {
+        assert.deepEqual(err.message, 'IP is blacklisted', 'IP test (negative case 2)');
+        callback();
+      });
+    },
+    function(callback) {
+      // IPv6
+      obj_ext = { a: '2001:db8::1:0:0:1'};
+      v.check(obj_ext, function(err, cleaned) {
+        assert.ifError(err, 'IPv6 blacklist test');
+        callback();
+      });
+    },
+    function(callback) {
+      neg = {a: 'fc00:1:0:0:1' };
+      v.check(neg, function(err, cleaned) {
+        assert.deepEqual(err.message, 'Invalid IP', 'IP test (negative case 2)');
+        callback();
+      });
+    }],
+    function(err, results) {
+      test.finish();
+    }
+  );
 };
 
 
