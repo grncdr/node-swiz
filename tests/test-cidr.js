@@ -35,8 +35,7 @@ exports['test_cidr_v4'] = function(test, assert) {
 };
 
 exports['test_cidr_v6'] = function(test, assert) {
-
-  c1 = new CIDR('a::b/64');
+  var c1 = new CIDR('a::b/64');
 
   assert.deepEqual(c1.v, 6);
   assert.deepEqual(c1.subnet, 64);
