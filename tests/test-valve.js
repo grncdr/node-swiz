@@ -65,6 +65,7 @@ exports['test_validate_int'] = function(test, assert) {
       });
     }],
     function(err, results) {
+      assert.ifError(err);
       test.finish();
     }
   );
@@ -96,6 +97,7 @@ exports['test_validate_email'] = function(test, assert) {
       });
     }],
     function(err, results) {
+      assert.ifError(err);
       test.finish();
     }
   );
@@ -129,6 +131,7 @@ exports['test_validate_url'] = function(test, assert) {
       });
     }],
     function(err, results) {
+      assert.ifError(err);
       test.finish();
     }
   );
@@ -179,6 +182,7 @@ exports['test_validate_ip'] = function(test, assert) {
       });
     }],
     function (err, results) {
+      assert.ifError(err);
       test.finish();
     }
   );
@@ -231,6 +235,7 @@ exports['test_validate_ip_blacklist'] = function(test, assert) {
       });
     }],
     function(err, results) {
+      assert.ifError(err);
       test.finish();
     }
   );
@@ -239,42 +244,60 @@ exports['test_validate_ip_blacklist'] = function(test, assert) {
 
 exports['test_validate_cidr'] = function(test, assert) {
   var v = new V({
-    a: C().isCIDR()
-  });
+        a: C().isCIDR()
+      }),
+      obj,
+      obj_ext,
+      neg;
 
-  // positive case
-  var obj = { a: '192.168.0.1/2' };
-  var obj_ext = { a: '192.168.0.1/2', b: 2 };
-  v.check(obj_ext, function(err, cleaned) {
-    assert.ifError(err);
-    assert.deepEqual(cleaned, obj, 'CIDR test');
-  });
-
-  // negative case
-  var neg = { a: 'invalid/' };
-  v.check(neg, function(err, cleaned) {
-    assert.deepEqual(err.message, 'Invalid IP', 'CIDR test (negative case)');
-  });
-
-  neg = { a: '192.168.0.1/128' };
-  v.check(neg, function(err, cleaned) {
-    assert.deepEqual(err.message, 'Invalid subnet length', 'CIDR test (negative case 2)');
-  });
-
-  // IPv6 normalization
-  obj_ext = { a: '2001:db8::1:0:0:1/3'};
-  obj = { a: '2001:0db8:0000:0000:0001:0000:0000:0001/3' };
-  v.check(obj_ext, function(err, cleaned) {
-    assert.ifError(err);
-    assert.deepEqual(cleaned, obj, 'IPv6 CIDR test');
-  });
-
-  neg = { a: '2001:db8::1:0:0:1/194' };
-  v.check(neg, function(err, cleaned) {
-    assert.deepEqual(err.message, 'Invalid subnet length', 'IPv6 CIDR test (negative case)');
-  });
-
-  test.finish();
+  async.parallel([
+    function(callback) {
+      // positive case
+      obj = { a: '192.168.0.1/2' };
+      obj_ext = { a: '192.168.0.1/2', b: 2 };
+      v.check(obj_ext, function(err, cleaned) {
+        assert.ifError(err);
+        assert.deepEqual(cleaned, obj, 'CIDR test');
+        callback();
+      });
+    },
+    function(callback) {
+      // negative case
+      neg = { a: 'invalid/' };
+      v.check(neg, function(err, cleaned) {
+        assert.deepEqual(err.message, 'Invalid IP', 'CIDR test (negative case)');
+        callback();
+      });
+    },
+    function(callback) {
+      neg = { a: '192.168.0.1/128' };
+      v.check(neg, function(err, cleaned) {
+        assert.deepEqual(err.message, 'Invalid subnet length', 'CIDR test (negative case 2)');
+        callback();
+      });
+    },
+    function(callback) {
+      // IPv6 normalization
+      obj_ext = { a: '2001:db8::1:0:0:1/3'};
+      obj = { a: '2001:0db8:0000:0000:0001:0000:0000:0001/3' };
+      v.check(obj_ext, function(err, cleaned) {
+        assert.ifError(err);
+        assert.deepEqual(cleaned, obj, 'IPv6 CIDR test');
+        callback();
+      });
+    },
+    function(callback) {
+      neg = { a: '2001:db8::1:0:0:1/194' };
+      v.check(neg, function(err, cleaned) {
+        assert.deepEqual(err.message, 'Invalid subnet length', 'IPv6 CIDR test (negative case)');
+        callback();
+      });
+    }],
+    function (err, results) {
+      assert.ifError(err);
+      test.finish();
+    }
+  );
 };
 
 
@@ -306,6 +329,7 @@ exports['test_validate_alpha'] = function(test, assert) {
       });
     }],
     function(err, results) {
+      assert.ifError(err);
       test.finish();
     }
   );
@@ -314,57 +338,87 @@ exports['test_validate_alpha'] = function(test, assert) {
 
 exports['test_validate_alphanumeric'] = function(test, assert) {
   var v = new V({
-    a: C().isAlphanumeric()
-  });
+        a: C().isAlphanumeric()
+      }),
+      obj,
+      obj_ext,
+      neg;
 
-  // positive case
-  var obj = { a: 'ABC123' };
-  var obj_ext = { a: 'ABC123', b: 2 };
-  v.check(obj_ext, function(err, cleaned) {
-    assert.ifError(err);
-    assert.deepEqual(cleaned, obj, 'alphanumeric test');
-  });
+  async.series([
+    function (callback) {
+      // positive case
+      obj = { a: 'ABC123' };
+      obj_ext = { a: 'ABC123', b: 2 };
+      v.check(obj_ext, function(err, cleaned) {
+        assert.ifError(err);
+        assert.deepEqual(cleaned, obj, 'alphanumeric test');
+        callback();
+      });
+    },
+    function (callback) {
+      // negative case
+      neg = { a: 'invalid/' };
+      v.check(neg, function(err, cleaned) {
+        assert.deepEqual(err.message, 'Invalid characters', 'alphanumeric test (negative case)');
+        callback();
+      });
+    }],
+    function (err, results) {
+      assert.ifError(err);
+      test.finish();
+    }
+  );
 
-  // negative case
-  var neg = { a: 'invalid/' };
-  v.check(neg, function(err, cleaned) {
-    assert.deepEqual(err.message, 'Invalid characters', 'alphanumeric test (negative case)');
-  });
-
-  test.finish();
 };
 
 
 exports['test_validate_numeric'] = function(test, assert) {
   var v = new V({
-    a: C().isNumeric()
-  });
+        a: C().isNumeric()
+      }),
+      obj,
+      obj_ext,
+      neg;
 
-  // positive case
-  var obj = { a: '123' };
-  var obj_ext = { a: 123, b: 2 };
-  v.check(obj_ext, function(err, cleaned) {
-    assert.ifError(err);
-    assert.deepEqual(cleaned, obj, 'numeric test');
-  });
-
-  obj_ext = { a: '123', b: 2 };
-  v.check(obj_ext, function(err, cleaned) {
-    assert.ifError(err);
-    assert.deepEqual(cleaned, obj, 'numeric test 2');
-  });
-
-  // negative case
-  var neg = { a: '/' };
-  v.check(neg, function(err, cleaned) {
-    assert.deepEqual(err.message, 'Invalid number', 'numeric test (negative case)');
-  });
-  neg = { a: 123.4 };
-  v.check(neg, function(err, cleaned) {
-    assert.deepEqual(err.message, 'Invalid number', 'numeric test (negative case 2)');
-  });
-
-  test.finish();
+  async.series([
+    function (callback) {
+      // positive case
+      obj = { a: '123' };
+      obj_ext = { a: 123, b: 2 };
+      v.check(obj_ext, function(err, cleaned) {
+        assert.ifError(err);
+        assert.deepEqual(cleaned, obj, 'numeric test');
+        callback();
+      });
+    },
+    function (callback) {
+      obj_ext = { a: '123', b: 2 };
+      v.check(obj_ext, function(err, cleaned) {
+        assert.ifError(err);
+        assert.deepEqual(cleaned, obj, 'numeric test 2');
+        callback();
+      });
+    },
+    function (callback) {
+      // negative case
+      neg = { a: '/' };
+      v.check(neg, function(err, cleaned) {
+        assert.deepEqual(err.message, 'Invalid number', 'numeric test (negative case)');
+        callback();
+      });
+    },
+    function (callback) {
+      neg = { a: 123.4 };
+      v.check(neg, function(err, cleaned) {
+        assert.deepEqual(err.message, 'Invalid number', 'numeric test (negative case 2)');
+        callback();
+      });
+    }],
+    function (err, results) {
+      // body...
+      test.finish();
+    }
+  );
 };
 
 
