@@ -1452,3 +1452,25 @@ exports['test_roundtrip_swiz_valve'] = function(test, assert) {
     });
   });
 };
+
+exports['test_boolean'] = function(test, assert) {
+  var v = new V({
+    a: C().isBoolean()
+  });
+
+  // positive case
+  var obj = { a: true };
+  var obj_ext = { a: 1 };
+  v.check(obj_ext, function(err, cleaned) {
+    assert.ifError(err);
+    assert.deepEqual(cleaned, obj, 'boolean test');
+  });
+
+  // negative case
+  var neg = { a: 'notFalse' };
+  v.check(neg, function(err, cleaned) {
+    assert.deepEqual(err.message, "Not a boolean", 'boolean test');
+  });
+
+  test.finish();
+};
