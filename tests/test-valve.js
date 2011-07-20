@@ -1269,7 +1269,8 @@ exports['test_custom'] = function(test, assert) {
   var description = 'Is the meaning of life';
   V.addChainValidator('isMeaningOfLife',
                  description,
-                 function(value, callback) {
+                 function(value, baton, callback) {
+                   assert.deepEqual(baton, 'aBaton');
                    if (value == 42) {
                      callback(null, 'forty-two');
                    } else {
@@ -1285,6 +1286,7 @@ exports['test_custom'] = function(test, assert) {
 
   assert.deepEqual(v.help().a[0], description, 'custom help');
 
+  v.baton = 'aBaton';
   v.check(obj_ext, function(err, cleaned) {
       assert.ifError(err);
       assert.deepEqual(cleaned, obj, 'custom test');
