@@ -1269,7 +1269,8 @@ exports['test_custom'] = function(test, assert) {
   var description = 'Is the meaning of life';
   V.addChainValidator('isMeaningOfLife',
                  description,
-                 function(value, callback) {
+                 function(value, baton, callback) {
+                   assert.deepEqual(baton, 'aBaton');
                    if (value == 42) {
                      callback(null, 'forty-two');
                    } else {
@@ -1285,6 +1286,7 @@ exports['test_custom'] = function(test, assert) {
 
   assert.deepEqual(v.help().a[0], description, 'custom help');
 
+  v.baton = 'aBaton';
   v.check(obj_ext, function(err, cleaned) {
       assert.ifError(err);
       assert.deepEqual(cleaned, obj, 'custom test');
@@ -1314,6 +1316,50 @@ exports['test_custom'] = function(test, assert) {
   test.finish();
 };
 
+exports['test_custom_array_with_baton'] = function(test, assert) {
+  var description = 'Is the meaning of life';
+  V.addChainValidator('isMeaningOfLife',
+                 description,
+                 function(value, baton, callback) {
+                   assert.deepEqual(baton, 'aBaton');
+                   if (value == 42) {
+                     callback(null, 'forty-two');
+                   } else {
+                     callback('incorrect value');
+                   }
+                 });
+
+  var v = new V({
+    a: C().optional().isArray(C().custom('isMeaningOfLife'))
+  });
+  var obj = { a: ['forty-two'] };
+  var obj_ext = { a: [42], b: 'foo' };
+
+  var neg = { a: [43] };
+  v.baton = 'aBaton';
+  v.check(neg, function(err, cleaned) {
+    console.log(err);
+    assert.deepEqual(err.message, 'incorrect value', 'custom test (negative case)');
+  });
+
+  assert.throws(function() {
+                  var v = new V({
+                    a: C().custom('bogus')
+                  });
+                },
+                /Unknown validator name/,
+                'custom test (unknown validator)');
+
+  assert.throws(function() {
+                  var v = new V({
+                    a: C().custom()
+                  });
+                },
+                /Missing/,
+                'custom test (missing validator)');
+
+  test.finish();
+};
 
 exports['test_final'] = function(test, assert) {
   var v,
@@ -1451,4 +1497,26 @@ exports['test_roundtrip_swiz_valve'] = function(test, assert) {
         test.finish();
     });
   });
+};
+
+exports['test_boolean'] = function(test, assert) {
+  var v = new V({
+    a: C().isBoolean()
+  });
+
+  // positive case
+  var obj = { a: true };
+  var obj_ext = { a: 1 };
+  v.check(obj_ext, function(err, cleaned) {
+    assert.ifError(err);
+    assert.deepEqual(cleaned, obj, 'boolean test');
+  });
+
+  // negative case
+  var neg = { a: 'notFalse' };
+  v.check(neg, function(err, cleaned) {
+    assert.deepEqual(err.message, "Not a boolean", 'boolean test');
+  });
+
+  test.finish();
 };
