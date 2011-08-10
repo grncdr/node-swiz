@@ -26,11 +26,11 @@
   },
   "dependencies" : {
     "async": "0.1.9",
-    "validator": "0.2.3",
+    "validator": "0.2.7",
     "ipv6": "0.0.1"
   },
   "devDependencies": {
-    "whiskey": "0.3.3"
+    "whiskey": "0.4.1"
   },
   "licenses": [
     {
