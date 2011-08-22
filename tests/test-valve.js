@@ -98,6 +98,59 @@ exports['test_validate_url'] = function(test, assert) {
   test.finish();
 };
 
+exports['test_validate_ipv6'] = function(test, assert) {
+  var v = new V({
+    a: C().isIPv6()
+  });
+
+  // positive case
+  var obj = { a: '2001:0db8:0000:0000:0001:0000:0000:0001' };
+  var obj_ext = { a: '2001:0db8:0000:0000:0001:0000:0000:0001', b: 2 };
+  v.check(obj_ext, function(err, cleaned) {
+    assert.ifError(err);
+    assert.deepEqual(cleaned, obj, 'IPv6 test');
+  });
+
+  // negative case
+  var neg = { a: '127.0.0.2' };
+  v.check(neg, function(err, cleaned) {
+    assert.deepEqual(err.message, 'Invalid IPv6', 'IPv6 test (negative case)');
+  });
+
+  neg = {a: '12345' };
+  v.check(neg, function(err, cleaned) {
+    assert.deepEqual(err.message, 'Invalid IPv6', 'IPv6 test (negative case 2)');
+  });
+
+  test.finish();
+};
+exports['test_validate_ipv4'] = function(test, assert) {
+  var v = new V({
+    a: C().isIPv4()
+  });
+
+  // positive case
+  var obj = { a: '192.168.0.1' };
+  var obj_ext = { a: '192.168.0.1', b: 2 };
+  v.check(obj_ext, function(err, cleaned) {
+    assert.ifError(err);
+    assert.deepEqual(cleaned, obj, 'IP test');
+  });
+
+  // negative case
+  var neg = { a: '2001:0db8:0000:0000:0001:0000:0000:0001' };
+  v.check(neg, function(err, cleaned) {
+    assert.deepEqual(err.message, 'Invalid IPv4', 'IPv4 test (negative case)');
+  });
+
+  neg = {a: '12345' };
+  v.check(neg, function(err, cleaned) {
+    assert.deepEqual(err.message, 'Invalid IPv4', 'IPv4 test (negative case 2)');
+  });
+
+  test.finish();
+};
+
 exports['test_validate_ip'] = function(test, assert) {
   var v = new V({
     a: C().isIP()
