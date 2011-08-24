@@ -1601,3 +1601,25 @@ exports['test_boolean'] = function(test, assert) {
 
   test.finish();
 };
+
+exports['test_inArray'] = function(test, assert) {
+  var v = new V({
+    a: new C().inArray([1, 2, 3, 4, 5])
+  });
+
+  // positive case
+  var pos = { a: 1 };
+  v.check(pos, function(err, cleaned) {
+    assert.ifError(err);
+    assert.deepEqual(cleaned, pos, 'isArray test');
+  });
+
+  // negative case
+  var neg = { a: -1 };
+  v.check(neg, function(err, cleaned) {
+    console.log(err)
+    assert.deepEqual(err.message, "Invalid value '-1'", 'inArray test');
+  });
+
+  test.finish();
+};
