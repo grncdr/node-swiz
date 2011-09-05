@@ -5,11 +5,12 @@
     "Ken Wronkiewicz <ken.wronkiewicz@rackspace.com>",
     "Ryan Phillips <ryan.phillips@rackspace.com>",
     "Russell Haering <russell.haering@rackspace.com>",
-    "Paul Querna <pquerna@apache.org>"
+    "Paul Querna <pquerna@apache.org>",
+    "Tomaz Muraus <tomaz.muraus@rackspace.com>"
   ],
   "name": "swiz",
   "description": "Serilization and Validation Framework for objects in RESTful APIs",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "homepage": "https://github.com/racker/node-swiz",
   "repository": {
     "type": "git",
