@@ -135,14 +135,15 @@ exports['test_build_object'] = function(test, assert) {
 
 exports['test_serial_xml'] = function(test, assert) {
   var blahnode = new Node();
-  var sw = new swiz.Swiz(def);
+  blahnode.active = false;
+  var sw = new swiz.Swiz(def, { stripNulls: true });
   //swiz.loadDefinitions(def);
   sw.serialize(swiz.SERIALIZATION.SERIALIZATION_XML, 1, blahnode,
       function(err, results)
       {
         // need to make an appointemnt with a DOM for this one.
         assert.deepEqual(results, '<?xml version="1.0" encoding="UTF-8"?>' +
-            '<Node><id>15245</id><is_active>true</' +
+            '<Node><id>15245</id><is_active>false</' +
             'is_active><name>gggggg</name><agent_name>gl&lt;ah</' +
             'agent_name><ipaddress>123.33.22.1</ipaddress>' +
             '<public_ips>123.45.55.44</public_ips>' +
@@ -160,16 +161,77 @@ exports['test_serial_xml'] = function(test, assert) {
   );
 };
 
+
+exports['test_serial_xml_stripNulls'] = function(test, assert) {
+  var blahnode = new Node();
+  blahnode.active = null;
+  var sw = new swiz.Swiz(def, { stripNulls: true });
+  //swiz.loadDefinitions(def);
+  sw.serialize(swiz.SERIALIZATION.SERIALIZATION_XML, 1, blahnode,
+      function(err, results)
+      {
+        // need to make an appointemnt with a DOM for this one.
+        assert.deepEqual(results, '<?xml version="1.0" encoding="UTF-8"?>' +
+            '<Node><id>15245</id>' +
+            '<name>gggggg</name><agent_name>gl&lt;ah</' +
+            'agent_name><ipaddress>123.33.22.1</ipaddress>' +
+            '<public_ips>123.45.55.44</public_ips>' +
+            '<public_ips>122.123.32.2</public_ips>' +
+            '<state>active</state>' +
+            '<opts><NodeOpts>' +
+            '<option1>defaultval</option1>' +
+            '<option2>defaultval</option2>' +
+            '<option3>something</option3>' +
+            '</NodeOpts></opts>' +
+            '<data><foo>thingone</foo><bar>thingtwo</bar></data></Node>');
+
+        test.finish();
+      }
+  );
+};
+
+
 exports['test_serial_json'] = function(test, assert) {
   var blahnode = new Node();
-  var sw = new swiz.Swiz(def);
+  blahnode.active = false;
+  var sw = new swiz.Swiz(def, { stripNulls: true });
   //swiz.loadDefinitions(def);
   sw.serialize(swiz.SERIALIZATION.SERIALIZATION_JSON, 1, blahnode,
       function(err, results)
       {
         var rep = JSON.parse(results);
         assert.deepEqual(rep.id, 15245);
-        assert.deepEqual(rep.is_active, true);
+        assert.deepEqual(rep.is_active, false);
+        assert.deepEqual(rep.name, 'gggggg');
+        assert.deepEqual(rep.agent_name, 'gl<ah');
+        assert.deepEqual(rep.ipaddress, '123.33.22.1');
+        assert.deepEqual(rep.public_ips, ['123.45.55.44', '122.123.32.2']);
+        assert.deepEqual(rep.opts, {
+          option1: 'defaultval',
+          option2: 'defaultval',
+          option3: 'something'
+        });
+        assert.deepEqual(rep.data, {
+          foo: 'thingone',
+          bar: 'thingtwo'
+        });
+        assert.deepEqual(rep.state, 'active');
+        test.finish();
+      }
+  );
+};
+
+exports['test_serial_json_stripNulls'] = function(test, assert) {
+  var blahnode = new Node();
+  blahnode.active = null;
+  var sw = new swiz.Swiz(def, { stripNulls: true });
+  //swiz.loadDefinitions(def);
+  sw.serialize(swiz.SERIALIZATION.SERIALIZATION_JSON, 1, blahnode,
+      function(err, results)
+      {
+        var rep = JSON.parse(results);
+        assert.deepEqual(rep.id, 15245);
+        assert.ok(!rep.hasOwnProperty('is_active'));
         assert.deepEqual(rep.name, 'gggggg');
         assert.deepEqual(rep.agent_name, 'gl<ah');
         assert.deepEqual(rep.ipaddress, '123.33.22.1');
