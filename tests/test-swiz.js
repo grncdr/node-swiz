@@ -362,3 +362,26 @@ exports['test_serial_array_json'] = function(test, assert) {
       }
   );
 };
+
+exports['test_serial_edge_cases_xml'] = function(test, assert) {
+  var blahnode = new Node();
+  blahnode.active = false;
+  blahnode.public_ips = [];
+  blahnode.options = {};
+  var sw = new swiz.Swiz(def, { stripNulls: true });
+  sw.serialize(swiz.SERIALIZATION.SERIALIZATION_XML, 1, blahnode,
+      function(err, results)
+      {
+        // need to make an appointemnt with a DOM for this one.
+        assert.trimEqual(results, '<?xml version=\'1.0\' encoding=\'utf-8\'?>\n' +
+            '<Node><id>15245</id><is_active>false</' +
+            'is_active><name>gggggg</name><agent_name>gl&lt;ah</' +
+            'agent_name><ipaddress>123.33.22.1</ipaddress>' +
+            '<state>active</state>' +
+            '<opts />' +
+            '<data><foo>thingone</foo><bar>thingtwo</bar></data></Node>');
+
+        test.finish();
+      }
+  );
+};
