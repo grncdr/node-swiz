@@ -1617,7 +1617,6 @@ exports['test_inArray'] = function(test, assert) {
   // negative case
   var neg = { a: -1 };
   v.check(neg, function(err, cleaned) {
-    console.log(err)
     assert.deepEqual(err.message, "Invalid value '-1'", 'inArray test');
   });
 
