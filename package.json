@@ -29,7 +29,8 @@
   "dependencies" : {
     "async": "0.1.9",
     "validator": "0.2.7",
-    "ipv6": "0.0.1"
+    "ipv6": "0.0.1",
+    "elementtree": "0.1.0"
   },
   "devDependencies": {
     "whiskey": "0.4.1"
