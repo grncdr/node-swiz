@@ -385,3 +385,19 @@ exports['test_serial_edge_cases_xml'] = function(test, assert) {
       }
   );
 };
+
+exports['test_serial_invalid_serializer_type_xml'] = function(test, assert) {
+  var blahnode = new Node();
+  blahnode.getSerializerType = function() {
+    return 'foobar';
+  };
+  var sw = new swiz.Swiz(def, { stripNulls: true });
+  sw.serialize(swiz.SERIALIZATION.SERIALIZATION_XML, 1, blahnode,
+      function(err, results)
+      {
+        assert.ok(err);
+        assert.ok(!results);
+        test.finish();
+      }
+  );
+};
