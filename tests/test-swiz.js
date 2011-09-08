@@ -16,8 +16,17 @@
  */
 
 var util = require('util');
+var assert = require('assert');
 
 var swiz = require('swiz');
+var trim = require('./../lib/util').trim;
+
+
+assert.trimEqual = function(actual, expected, message) {
+  actual = trim(actual);
+  expected = trim(expected);
+  assert.equal(actual, expected, message);
+};
 
 
 // Mock set of serialization defs
@@ -142,7 +151,7 @@ exports['test_serial_xml'] = function(test, assert) {
       function(err, results)
       {
         // need to make an appointemnt with a DOM for this one.
-        assert.deepEqual(results, '<?xml version="1.0" encoding="UTF-8"?>' +
+        assert.trimEqual(results, '<?xml version=\'1.0\' encoding=\'utf-8\'?>\n' +
             '<Node><id>15245</id><is_active>false</' +
             'is_active><name>gggggg</name><agent_name>gl&lt;ah</' +
             'agent_name><ipaddress>123.33.22.1</ipaddress>' +
@@ -171,7 +180,7 @@ exports['test_serial_xml_stripNulls'] = function(test, assert) {
       function(err, results)
       {
         // need to make an appointemnt with a DOM for this one.
-        assert.deepEqual(results, '<?xml version="1.0" encoding="UTF-8"?>' +
+        assert.trimEqual(results, '<?xml version=\'1.0\' encoding=\'utf-8\'?>\n' +
             '<Node><id>15245</id>' +
             '<name>gggggg</name><agent_name>gl&lt;ah</' +
             'agent_name><ipaddress>123.33.22.1</ipaddress>' +
@@ -261,8 +270,7 @@ exports['test_serial_array_xml'] = function(test, assert) {
   sw.serialize(swiz.SERIALIZATION.SERIALIZATION_XML, 1, blaharr,
       function(err, results)
       {
-
-        assert.deepEqual(results, '<?xml version="1.0" encoding="UTF-8"?>' +
+        assert.trimEqual(results, '<?xml version=\'1.0\' encoding=\'utf-8\'?>\n' +
             '<group><Node><id>15245</id><is_active>true</' +
             'is_active><name>gggggg</name><agent_name>gl&lt;ah</' +
             'agent_name><ipaddress>123.33.22.1</ipaddress>' +
