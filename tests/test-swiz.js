@@ -19,6 +19,8 @@ var util = require('util');
 var assert = require('assert');
 
 var swiz = require('swiz');
+var O = swiz.struct.Obj;
+var F = swiz.struct.Field;
 var trim = require('./../lib/util').trim;
 
 
@@ -30,29 +32,32 @@ assert.trimEqual = function(actual, expected, message) {
 
 
 // Mock set of serialization defs
-var def = {
-  'Node' : [
-    ['id' , {'src' : 'hash_id', 'type' : 'string',
-      'desc' : 'hash ID for the node', 'attribute': true}],
-    ['is_active' , {'src' : 'active', 'type' : 'bool',
-      'desc' : 'is the node active?'}],
-    ['name' , {'src' : 'get_name', 'type' : 'string', 'desc' : 'name',
-      'attribute': true }],
-    ['agent_name' , {'type': 'string'}],
-    ['ipaddress' , {'src' : 'get_public_address', 'type' : 'ip'}],
-    ['public_ips' , {'cache_key' : 'node_addrs_public', 'type' : 'list<ip>'}],
-    ['state', {'enumerated' : {inactive: 0, active: 1, full_no_new_checks: 2}}],
-    ['opts', {'src': 'options', 'type': 'NodeOpts'}],
-    ['data', {'src': 'data', 'type': 'map<string, object>'}]
-  ],
-  'NodeOpts': [
-    ['option1', {'src': 'opt1', 'type': 'string'}],
-    ['option2', {'src': 'opt2', 'type': 'string'}],
-    ['option3', {'src': 'opt3', 'type': 'string'}]
-  ]
-};
+var def = [
+  O('Node',
+    {
+      'fields': [
+        F('id', {'src': 'hash_id', 'desc': 'hash ID for the node', 'attribute': true}),
+        F('is_active', {'src': 'active', 'desc': 'is the node active?'}),
+        F('name', {'src' : 'get_name', 'desc' : 'name', 'attribute': true}),
+        F('agent_name'),
+        F('ipaddress' , {'src' : 'get_public_address'}),
+        F('public_ips', {'singular': 'ip', 'type' : 'list<ip>'}),
+        F('state', {'enumerated' : {inactive: 0, active: 1, full_no_new_checks: 2}}),
+        F('opts', {'src': 'options'}),
+        F('data')
+        ],
+      'plural': 'nodes'
+    }),
 
-
+  O('NodeOpts',
+    {
+      'fields': [
+        F('option1', {'src': 'opt1'}),
+        F('option2', {'src': 'opt2'}),
+        F('option3', {'src': 'opt3'}),
+      ]
+    }),
+];
 
 /** Completely mock node object.
 * @constructor
@@ -136,11 +141,10 @@ exports['test_build_object'] = function(test, assert) {
 };
 
 
-exports['test_serial_xml'] = function(test, assert) {
+exports['test_serial_xml_v2'] = function(test, assert) {
   var blahnode = new Node();
   blahnode.active = false;
   var sw = new swiz.Swiz(def, { stripNulls: true });
-  //swiz.loadDefinitions(def);
   sw.serialize(swiz.SERIALIZATION.SERIALIZATION_XML, 1, blahnode,
       function(err, results)
       {
