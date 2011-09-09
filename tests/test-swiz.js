@@ -55,7 +55,9 @@ var def = [
         F('option1', {'src': 'opt1'}),
         F('option2', {'src': 'opt2'}),
         F('option3', {'src': 'opt3'}),
-      ]
+      ],
+
+      'singular': 'nodeOpts'
     }),
 ];
 
@@ -141,26 +143,27 @@ exports['test_build_object'] = function(test, assert) {
 };
 
 
-exports['test_serial_xml_v2'] = function(test, assert) {
+exports['test_serial_xml'] = function(test, assert) {
   var blahnode = new Node();
   blahnode.active = false;
   var sw = new swiz.Swiz(def, { stripNulls: true });
   sw.serialize(swiz.SERIALIZATION.SERIALIZATION_XML, 1, blahnode,
       function(err, results)
       {
+        console.log(results)
         // need to make an appointemnt with a DOM for this one.
         assert.trimEqual(results, '<?xml version=\'1.0\' encoding=\'utf-8\'?>\n' +
-            '<Node id="15245" name="gggggg"><is_active>false</' +
+            '<node id="15245" name="gggggg"><is_active>false</' +
             'is_active><agent_name>gl&lt;ah</' +
             'agent_name><ipaddress>123.33.22.1</ipaddress>' +
             '<public_ips><ip>123.45.55.44</ip><ip>122.123.32.2</ip></public_ips>' +
             '<state>active</state>' +
-            '<opts><NodeOpts>' +
+            '<opts><nodeOpts>' +
             '<option1>defaultval</option1>' +
             '<option2>defaultval</option2>' +
             '<option3>something</option3>' +
-            '</NodeOpts></opts>' +
-            '<data><foo>thingone</foo><bar>thingtwo</bar></data></Node>');
+            '</nodeOpts></opts>' +
+            '<data><foo>thingone</foo><bar>thingtwo</bar></data></node>');
 
         test.finish();
       }
@@ -178,16 +181,16 @@ exports['test_serial_xml_stripNulls'] = function(test, assert) {
       {
         // need to make an appointemnt with a DOM for this one.
         assert.trimEqual(results, '<?xml version=\'1.0\' encoding=\'utf-8\'?>\n' +
-            '<Node id="15245" name="gggggg"><agent_name>gl&lt;ah</' +
+            '<node id="15245" name="gggggg"><agent_name>gl&lt;ah</' +
             'agent_name><ipaddress>123.33.22.1</ipaddress>' +
             '<public_ips><ip>123.45.55.44</ip><ip>122.123.32.2</ip></public_ips>' +
             '<state>active</state>' +
-            '<opts><NodeOpts>' +
+            '<opts><nodeOpts>' +
             '<option1>defaultval</option1>' +
             '<option2>defaultval</option2>' +
             '<option3>something</option3>' +
-            '</NodeOpts></opts>' +
-            '<data><foo>thingone</foo><bar>thingtwo</bar></data></Node>');
+            '</nodeOpts></opts>' +
+            '<data><foo>thingone</foo><bar>thingtwo</bar></data></node>');
 
         test.finish();
       }
@@ -266,25 +269,25 @@ exports['test_serial_array_xml'] = function(test, assert) {
       function(err, results)
       {
         assert.trimEqual(results, '<?xml version=\'1.0\' encoding=\'utf-8\'?>\n' +
-            '<group><Node id="15245" name="gggggg"><is_active>true</' +
+            '<nodes><node id="15245" name="gggggg"><is_active>true</' +
             'is_active><agent_name>gl&lt;ah</' +
             'agent_name><ipaddress>123.33.22.1</ipaddress>' +
             '<public_ips><ip>123.45.55.44</ip><ip>122.123.32.2</ip></public_ips>' +
             '<state>active</state>' +
-            '<opts><NodeOpts>' +
+            '<opts><nodeOpts>' +
             '<option1>defaultval</option1><option2>defaultval</option2>' +
-            '<option3>something</option3></NodeOpts></opts>' +
-            '<data><foo>thingone</foo><bar>thingtwo</bar></data></Node>' +
-            '<Node id="444" name="gggggg"><is_active>true</' +
+            '<option3>something</option3></nodeOpts></opts>' +
+            '<data><foo>thingone</foo><bar>thingtwo</bar></data></node>' +
+            '<node id="444" name="gggggg"><is_active>true</' +
             'is_active><agent_name>your mom</' +
             'agent_name><ipaddress>123.33.22.1</ipaddress>' +
             '<public_ips><ip>123.45.55.44</ip><ip>122.123.32.2</ip></public_ips>' +
             '<state>active</state>' +
-            '<opts><NodeOpts>' +
+            '<opts><nodeOpts>' +
             '<option1>defaultval</option1><option2>defaultval</option2>' +
-            '<option3>something</option3></NodeOpts></opts>' +
-            '<data><foo>thingone</foo><bar>thingtwo</bar></data></Node>' +
-            '</group>');
+            '<option3>something</option3></nodeOpts></opts>' +
+            '<data><foo>thingone</foo><bar>thingtwo</bar></data></node>' +
+            '</nodes>');
 
         test.finish();
       }
@@ -367,12 +370,12 @@ exports['test_serial_edge_cases_xml'] = function(test, assert) {
       {
         // need to make an appointemnt with a DOM for this one.
         assert.trimEqual(results, '<?xml version=\'1.0\' encoding=\'utf-8\'?>\n' +
-            '<Node id="15245" name="gggggg"><is_active>false</' +
+            '<node id="15245" name="gggggg"><is_active>false</' +
             'is_active><agent_name>gl&lt;ah</' +
             'agent_name><ipaddress>123.33.22.1</ipaddress>' +
             '<state>active</state>' +
             '<opts />' +
-            '<data><foo>thingone</foo><bar>thingtwo</bar></data></Node>');
+            '<data><foo>thingone</foo><bar>thingtwo</bar></data></node>');
 
         test.finish();
       }
