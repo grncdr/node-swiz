@@ -41,7 +41,7 @@ var def = [
         F('name', {'src' : 'get_name', 'desc' : 'name', 'attribute': true}),
         F('agent_name'),
         F('ipaddress' , {'src' : 'get_public_address'}),
-        F('public_ips', {'singular': 'ip', 'type' : 'list<ip>'}),
+        F('public_ips', {'singular': 'ip'}),
         F('state', {'enumerated' : {inactive: 0, active: 1, full_no_new_checks: 2}}),
         F('opts', {'src': 'options'}),
         F('data')
