@@ -18,6 +18,59 @@
 var swiz = require('swiz');
 var V = swiz.Valve;
 var C = swiz.Chain;
+var O = swiz.struct.Obj;
+var F = swiz.struct.Field;
+
+// Mock set of serialization defs
+var def = [
+  O('Node',
+    {
+      'fields': [
+        F('id', {'src': 'hash_id', 'desc': 'hash ID for the node', 'attribute': true,
+                 'val' : C().isString()}),
+        F('is_active', {'src': 'active', 'desc': 'is the node active?',
+                        'val' : C().toBoolean()}),
+        F('name', {'src' : 'get_name', 'desc' : 'name', 'attribute': true,
+                   'val' : C().isString()}),
+        F('agent_name', {'val' : C().isString()}),
+        F('ipaddress' , {'src' : 'get_public_address', 'val' : C().isIP()}),
+      ],
+      'plural': 'nodes'
+    }),
+
+  O('NodeOpts',
+    {
+      'fields': [
+        F('option1', {'src': 'opt1', 'val' : C().isString()}),
+        F('option2', {'src': 'opt2', 'val' : C().isString()}),
+        F('option3', {'src': 'opt3', 'val' : C().isString()}),
+      ]
+    }),
+];
+
+var exampleNode = {
+  'id' : 'xkCD366',
+  'is_active' : true,
+  'name' : 'exmample',
+  'agent_name' : 'your mom',
+  'ipaddress' : '42.24.42.24'
+};
+
+var compNode = {
+  'hash_id' : 'xkCD366',
+  'active' : true,
+  'get_name' : 'exmample',
+  'agent_name' : 'your mom',
+  'get_public_address' : '42.24.42.24'
+};
+
+var badExampleNode = {
+  'id' : 'xkCD366',
+  'is_active' : true,
+  'name' : 'exmample',
+  'agent_name' : 'your mom',
+  'ipaddress' : '42'
+};
 
 exports['test_validate_int'] = function(test, assert) {
   var v = new V({
@@ -1494,57 +1547,6 @@ exports['test_final'] = function(test, assert) {
   test.finish();
 };
 
-
-// Mock set of serialization defs
-var def = {
-  'Node' : [
-    ['id' , {'src' : 'hash_id', 'type' : 'string',
-      'desc' : 'hash ID for the node',
-      'val' : C().isString()}],
-    ['is_active' , {'src' : 'active', 'type' : 'bool',
-      'desc' : 'is the node active?',
-      'val' : C().toBoolean()}],
-    ['name' , {'src' : 'get_name', 'type' : 'string', 'desc' : 'name' ,
-      'val' : C().isString()}],
-    ['agent_name' , {'type': 'string',
-      'val' : C().isString()}],
-    ['ipaddress' , {'src' : 'get_public_address', 'type' : 'ip',
-      'val' : C().isIP()}]
-  ],
-  'NodeOpts': [
-    ['option1', {'src': 'opt1', 'type': 'string',
-      'val' : C().isString()}],
-    ['option2', {'src': 'opt2', 'type': 'string',
-      'val' : C().isString()}],
-    ['option3', {'src': 'opt3', 'type': 'string',
-      'val' : C().isString()}]
-  ]
-};
-
-var exampleNode = {
-  'id' : 'xkCD366',
-  'is_active' : true,
-  'name' : 'exmample',
-  'agent_name' : 'your mom',
-  'ipaddress' : '42.24.42.24'
-};
-
-var compNode = {
-  'hash_id' : 'xkCD366',
-  'active' : true,
-  'get_name' : 'exmample',
-  'agent_name' : 'your mom',
-  'get_public_address' : '42.24.42.24'
-};
-
-var badExampleNode = {
-  'id' : 'xkCD366',
-  'is_active' : true,
-  'name' : 'exmample',
-  'agent_name' : 'your mom',
-  'ipaddress' : '42'
-};
-
 exports['test_schema_translation'] = function(test, assert) {
   var validity = swiz.defToValve(def),
       v = new V(validity.Node);
@@ -1555,6 +1557,8 @@ exports['test_schema_translation'] = function(test, assert) {
     assert.ifError(err);
     assert.deepEqual(cleaned, compNode, 'schema translation');
     v.check(badExampleNode, function(err, cleaned) {
+    console.log(cleaned)
+
       assert.deepEqual(err.message, 'Invalid IP',
         'schama translation failure');
       test.finish();
