@@ -164,6 +164,32 @@ exports['test_serial_xml'] = function(test, assert) {
 };
 
 
+exports['test_serial_xml_useAsAttribute'] = function(test, assert) {
+  var blahnode = new Node();
+  blahnode.active = false;
+  var sw = new swiz.Swiz(def, { stripNulls: true, useAsAttribute: ['id', 'inexistentattrib'] });
+  sw.serialize(swiz.SERIALIZATION.SERIALIZATION_XML, 1, blahnode,
+      function(err, results)
+      {
+        assert.trimEqual(results, '<?xml version=\'1.0\' encoding=\'utf-8\'?>\n' +
+            '<Node id="15245"><is_active>false</' +
+            'is_active><name>gggggg</name><agent_name>gl&lt;ah</' +
+            'agent_name><ipaddress>123.33.22.1</ipaddress>' +
+            '<public_ips>123.45.55.44</public_ips>' +
+            '<public_ips>122.123.32.2</public_ips>' +
+            '<state>active</state>' +
+            '<opts><NodeOpts>' +
+            '<option1>defaultval</option1>' +
+            '<option2>defaultval</option2>' +
+            '<option3>something</option3>' +
+            '</NodeOpts></opts>' +
+            '<data><foo>thingone</foo><bar>thingtwo</bar></data></Node>');
+
+        test.finish();
+      }
+  );
+};
+
 exports['test_serial_xml_stripNulls'] = function(test, assert) {
   var blahnode = new Node();
   blahnode.active = null;
