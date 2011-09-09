@@ -106,13 +106,6 @@ Node.prototype.get_public_address = function(callback) {
 */
 Node.prototype.getSerializerType = function() {return 'Node';};
 
-exports['test_xml_escape_string'] = function(test, assert) {
-  var sw = new swiz.Swiz(def);
-  assert.deepEqual(sw.xmlEscapeString('<&blah>'), '&lt;&amp;blah&gt;');
-
-  test.finish();
-};
-
 
 exports['test_build_object'] = function(test, assert) {
   var blahnode = new Node();
