@@ -1,2 +1,3 @@
 .gitignore
+.lvimrc
 node_modules
