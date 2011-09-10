@@ -32,7 +32,7 @@ var def = [
                         'val' : C().toBoolean()}),
         F('name', {'src' : 'get_name', 'desc' : 'name', 'attribute': true,
                    'val' : C().isString()}),
-        F('agent_name', {'val' : C().isString()}),
+        F('agent_name', {'val' : C().isString().notEmpty()}),
         F('ipaddress' , {'src' : 'get_public_address', 'val' : C().isIP()}),
       ],
       'plural': 'nodes'
@@ -71,6 +71,14 @@ var badExampleNode = {
   'agent_name' : 'your mom',
   'ipaddress' : '42'
 };
+
+var badExampleNode1 = {
+  'id' : 'xkCD366',
+  'is_active' : true,
+  'name' : 'exmample',
+  'ipaddress' : '42.24.42.24'
+};
+
 
 exports['test_validate_int'] = function(test, assert) {
   var v = new V({
@@ -1547,7 +1555,7 @@ exports['test_final'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_schema_translation'] = function(test, assert) {
+exports['test_schema_translation_1'] = function(test, assert) {
   var validity = swiz.defToValve(def),
       v = new V(validity.Node);
   assert.isDefined(validity.Node);
@@ -1557,12 +1565,24 @@ exports['test_schema_translation'] = function(test, assert) {
     assert.ifError(err);
     assert.deepEqual(cleaned, compNode, 'schema translation');
     v.check(badExampleNode, function(err, cleaned) {
-    console.log(cleaned)
 
       assert.deepEqual(err.message, 'Invalid IP',
         'schama translation failure');
       test.finish();
     });
+  });
+};
+
+exports['test_schema_translation_2'] = function(test, assert) {
+  var validity = swiz.defToValve(def),
+      v = new V(validity.Node);
+  assert.isDefined(validity.Node);
+  assert.isDefined(validity.NodeOpts);
+
+  v.check(badExampleNode1, function(err, cleaned) {
+    assert.deepEqual(err.message, 'Missing required key',
+      'schama translation failure (missing agent_key)');
+    test.finish();
   });
 };
 

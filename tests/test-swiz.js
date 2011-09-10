@@ -150,7 +150,6 @@ exports['test_serial_xml'] = function(test, assert) {
   sw.serialize(swiz.SERIALIZATION.SERIALIZATION_XML, 1, blahnode,
       function(err, results)
       {
-        console.log(results)
         // need to make an appointemnt with a DOM for this one.
         assert.trimEqual(results, '<?xml version=\'1.0\' encoding=\'utf-8\'?>\n' +
             '<node id="15245" name="gggggg"><is_active>false</' +
