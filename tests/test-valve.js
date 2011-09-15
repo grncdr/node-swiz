@@ -1646,3 +1646,24 @@ exports['test_inArray'] = function(test, assert) {
 
   test.finish();
 };
+
+exports['test_port'] = function(test, assert) {
+  var v = new V({
+    a: new C().isPort()
+  });
+
+  // positive case
+  var pos = { a: 1 };
+  v.check(pos, function(err, cleaned) {
+    assert.ifError(err);
+    assert.deepEqual(cleaned, pos, 'isPort test');
+  });
+
+  // negative case
+  var neg = { a: -1 };
+  v.check(neg, function(err, cleaned) {
+    assert.deepEqual(err.message, "Value out of range [1,65535]", 'isPort test');
+  });
+
+  test.finish();
+};
