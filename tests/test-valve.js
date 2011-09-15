@@ -740,7 +740,7 @@ exports['test_validate_missingKey'] = function(test, assert) {
   // negative case
   var neg = { b: 2 };
   v.check(neg, function(err, cleaned) {
-    assert.deepEqual(err.message, 'Missing required key', 'missingKey test (negative case)');
+    assert.deepEqual(err.message, 'Missing required key (a)', 'missingKey test (negative case)');
   });
 
   test.finish();
@@ -1387,7 +1387,7 @@ exports['test_partial_update_required'] = function(test, assert) {
 
   var neg = { a: 'foo' };
   v.checkPartial(neg, function(err, cleaned) {
-    assert.deepEqual(err.message, 'Missing required key', 'partial update required');
+    assert.deepEqual(err.message, 'Missing required key (b)', 'partial update required');
   });
 
   test.finish();
@@ -1580,7 +1580,7 @@ exports['test_schema_translation_2'] = function(test, assert) {
   assert.isDefined(validity.NodeOpts);
 
   v.check(badExampleNode1, function(err, cleaned) {
-    assert.deepEqual(err.message, 'Missing required key',
+    assert.deepEqual(err.message, 'Missing required key (agent_name)',
       'schama translation failure (missing agent_key)');
     test.finish();
   });
