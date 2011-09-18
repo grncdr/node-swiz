@@ -199,7 +199,6 @@ exports['test_serial_xml_stripNulls'] = function(test, assert) {
   var blahnode = new Node();
   blahnode.active = null;
   var sw = new swiz.Swiz(def, { stripNulls: true });
-  //swiz.loadDefinitions(def);
   sw.serialize(swiz.SERIALIZATION.SERIALIZATION_XML, 1, blahnode,
       function(err, results)
       {
@@ -225,7 +224,6 @@ exports['test_serial_json'] = function(test, assert) {
   var blahnode = new Node();
   blahnode.active = false;
   var sw = new swiz.Swiz(def, { stripNulls: true });
-  //swiz.loadDefinitions(def);
   sw.serialize(swiz.SERIALIZATION.SERIALIZATION_JSON, 1, blahnode,
       function(err, results)
       {
@@ -255,7 +253,6 @@ exports['test_serial_json_filterFrom'] = function(test, assert) {
   var blahnode = new Node();
   blahnode.active = false;
   var sw = new swiz.Swiz(def, { stripNulls: true });
-  //swiz.loadDefinitions(def);
   sw.serialize(swiz.SERIALIZATION.SERIALIZATION_JSON, 1, blahnode, {'for': 'public'},
       function(err, results)
       {
@@ -285,7 +282,6 @@ exports['test_serial_json_stripNulls'] = function(test, assert) {
   var blahnode = new Node();
   blahnode.active = null;
   var sw = new swiz.Swiz(def, { stripNulls: true });
-  //swiz.loadDefinitions(def);
   sw.serialize(swiz.SERIALIZATION.SERIALIZATION_JSON, 1, blahnode,
       function(err, results)
       {
