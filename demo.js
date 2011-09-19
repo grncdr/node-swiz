@@ -12,8 +12,9 @@ var def = [
   O('Node',
     {
       'fields': [
-        F('key', {'val' : new Chain()}),
-        F('ip_address_v4', {'val' : new Chain().isIP()})
+        F('key', {'val' : new Chain().isString()}),
+        F('ip_address_v4', {'val' : new Chain().isIP()}),
+        F('name', {'val' : new Chain().isString(), 'filterFrom': ['public']})
       ],
 
       'plural': 'nodes'
@@ -25,16 +26,17 @@ var schema = validity.Node;
 var v = new Valve(schema);
 
 // Generic payload
-var CreatePayload = {
+var createPayload = {
   key: '1234',
-  ip_address_v4: '1.2.0.4'
+  ip_address_v4: '1.2.0.4',
+  name: 'barrr'
 };
 
 console.log('validate a payload:\n');
 
 // Validate the generic payload
-v.check(CreatePayload, function(cleaned, err) {
-  var sw = new Swiz(def);
+v.check(createPayload, function(err, cleaned) {
+  var sw = new Swiz(def, { 'for': 'public' });
   if (err) {
     console.error(err);
   } else {
