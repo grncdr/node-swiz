@@ -119,7 +119,7 @@ Node.prototype.getSerializerType = function() {return 'Node';};
 exports['test_build_object'] = function(test, assert) {
   var blahnode = new Node();
   var sw = new swiz.Swiz(def);
-  sw.buildObject(blahnode, null, function(err, result) {
+  sw.buildObject(blahnode, function(err, result) {
     assert.ifError(err);
     assert.deepEqual(result, {
       id: 15245,
@@ -174,8 +174,8 @@ exports['test_serial_xml'] = function(test, assert) {
 exports['test_serial_xml_filterFrom'] = function(test, assert) {
   var blahnode = new Node();
   blahnode.active = false;
-  var sw = new swiz.Swiz(def, { stripNulls: true });
-  sw.serialize(swiz.SERIALIZATION.SERIALIZATION_XML, 1, blahnode, {'for': 'public'},
+  var sw = new swiz.Swiz(def, { stripNulls: true, for: 'public' });
+  sw.serialize(swiz.SERIALIZATION.SERIALIZATION_XML, 1, blahnode,
       function(err, results)
       {
         // need to make an appointemnt with a DOM for this one.
@@ -252,8 +252,8 @@ exports['test_serial_json'] = function(test, assert) {
 exports['test_serial_json_filterFrom'] = function(test, assert) {
   var blahnode = new Node();
   blahnode.active = false;
-  var sw = new swiz.Swiz(def, { stripNulls: true });
-  sw.serialize(swiz.SERIALIZATION.SERIALIZATION_JSON, 1, blahnode, {'for': 'public'},
+  var sw = new swiz.Swiz(def, { stripNulls: true, for: 'public' });
+  sw.serialize(swiz.SERIALIZATION.SERIALIZATION_JSON, 1, blahnode,
       function(err, results)
       {
         var rep = JSON.parse(results);
