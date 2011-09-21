@@ -1667,3 +1667,17 @@ exports['test_port'] = function(test, assert) {
 
   test.finish();
 };
+
+exports['test_getValidatorPos_and_hasValidator'] = function(test, assert) {
+  var v = new V({
+    a: C().len(1).isNumeric()
+  });
+
+  assert.equal(v.schema.a.getValidatorPos('len'), 0);
+  assert.equal(v.schema.a.getValidatorPos('isNumeric'), 1);
+  assert.equal(v.schema.a.getValidatorPos('inArray'), -1);
+  assert.ok(v.schema.a.hasValidator('len'));
+  assert.ok(v.schema.a.hasValidator('isNumeric'));
+  assert.ok(!v.schema.a.hasValidator('inArray'));
+  test.finish();
+};
