@@ -1260,7 +1260,7 @@ exports['test_validate_enum'] = function(test, assert) {
   // negative case
   var neg = { a: 'bogus_key' };
   v.check(neg, function(err, cleaned) {
-    assert.deepEqual(err.message, "Invalid value 'bogus_key'", 'enum test (negative case)');
+    assert.match(err.message, /Invalid value 'bogus_key'/, 'enum test (negative case)');
   });
 
   test.finish();
@@ -1667,7 +1667,7 @@ exports['test_inArray'] = function(test, assert) {
   // negative case
   var neg = { a: -1 };
   v.check(neg, function(err, cleaned) {
-    assert.deepEqual(err.message, "Invalid value '-1'", 'inArray test');
+    assert.match(err.message, /Invalid value '-1'. Should be one of/, 'inArray test');
   });
 
   test.finish();
@@ -1690,6 +1690,26 @@ exports['test_port'] = function(test, assert) {
   v.check(neg, function(err, cleaned) {
     assert.deepEqual(err.message, "Value out of range [1,65535]", 'isPort test');
   });
+
+  test.finish();
+};
+
+exports['test_getValidatorPos_and_hasValidator'] = function(test, assert) {
+  var v = new V({
+    a: C().len(1).isNumeric(),
+    b: C().len(1).isNumeric().optional()
+  });
+
+  assert.equal(v.schema.a.getValidatorPos('len'), 0);
+  assert.equal(v.schema.a.getValidatorPos('isNumeric'), 1);
+  assert.equal(v.schema.a.getValidatorPos('inArray'), -1);
+
+  assert.ok(v.schema.a.hasValidator('len'));
+  assert.ok(v.schema.a.hasValidator('isNumeric'));
+  assert.ok(!v.schema.a.hasValidator('inArray'));
+
+  assert.equal(v.schema.b.getValidatorPos('optional'), 2);
+  assert.ok(v.schema.b.hasValidator('optional'));
 
   test.finish();
 };
