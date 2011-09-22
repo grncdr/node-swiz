@@ -1260,7 +1260,7 @@ exports['test_validate_enum'] = function(test, assert) {
   // negative case
   var neg = { a: 'bogus_key' };
   v.check(neg, function(err, cleaned) {
-    assert.deepEqual(err.message, "Invalid value 'bogus_key'", 'enum test (negative case)');
+    assert.match(err.message, /Invalid value 'bogus_key'/, 'enum test (negative case)');
   });
 
   test.finish();
@@ -1641,7 +1641,7 @@ exports['test_inArray'] = function(test, assert) {
   // negative case
   var neg = { a: -1 };
   v.check(neg, function(err, cleaned) {
-    assert.deepEqual(err.message, "Invalid value '-1'", 'inArray test');
+    assert.match(err.message, /Invalid value '-1'. Should be one of/, 'inArray test');
   });
 
   test.finish();
