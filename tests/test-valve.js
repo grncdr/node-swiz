@@ -212,6 +212,51 @@ exports['test_validate_ipv4'] = function(test, assert) {
   test.finish();
 };
 
+exports['test_validate_isAddressPair'] = function(test, assert) {
+  var v = new V({
+    a: C().isAddressPair()
+  });
+  var obj, obj_ext;
+
+  // positive case 1
+  obj = { a: '192.168.0.1:1111' };
+  obj_ext = { a: '192.168.0.1:1111' };
+  v.check(obj_ext, function(err, cleaned) {
+    assert.ifError(err);
+    assert.deepEqual(cleaned, obj, 'isAddressPair test');
+  });
+
+  // positive case 2
+  obj = { a: '0000:0000:0000:0000:0000:0000:0000:0001:22222' };
+  obj_ext = { a: '::1:22222' };
+  v.check(obj_ext, function(err, cleaned) {
+    assert.ifError(err);
+    assert.deepEqual(cleaned, obj, 'isAddressPair test');
+  });
+
+  // negative case 1
+  obj_ext = { a: '127.0.0.1' };
+  v.check(obj_ext, function(err, cleaned) {
+    assert.match(err.message, /Missing semicolon/);
+  });
+
+  // negative case 2
+  obj_ext = { a: 'a.b:4444' };
+  v.check(obj_ext, function(err, cleaned) {
+    assert.match(err.message, /Invalid IP/);
+  });
+
+  // negative case 3
+  obj_ext = { a: '127.0.0.1:444444' };
+  v.check(obj_ext, function(err, cleaned) {
+    assert.match(err.message, /Value out of range/);
+  });
+
+  test.finish();
+
+// positive case 2
+};
+
 exports['test_validate_ip'] = function(test, assert) {
   var v = new V({
     a: C().isIP()
