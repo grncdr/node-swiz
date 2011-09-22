@@ -1257,11 +1257,18 @@ exports['test_validate_enum'] = function(test, assert) {
     assert.deepEqual(cleaned, obj, 'enum test');
   });
 
-  // negative case
+  // negative case 1
   var neg = { a: 'bogus_key' };
   v.check(neg, function(err, cleaned) {
-    assert.match(err.message, /Invalid value 'bogus_key'/, 'enum test (negative case)');
+    assert.match(err.message, /Invalid value 'bogus_key'/, 'enum test (negative case 1)');
   });
+
+  // negative case 2
+  var neg = { a: 0 };
+  v.check(neg, function(err, cleaned) {
+    assert.match(err.message, /Invalid value '0'/, 'enum test (negative case 2)');
+  });
+
 
   test.finish();
 };
