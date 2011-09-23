@@ -243,13 +243,13 @@ exports['test_validate_isAddressPair'] = function(test, assert) {
   // negative case 2
   obj_ext = { a: 'a.b:4444' };
   v.check(obj_ext, function(err, cleaned) {
-    assert.match(err.message, /Invalid IP/);
+    assert.match(err.message, /IP address in the address pair is not valid/);
   });
 
   // negative case 3
   obj_ext = { a: '127.0.0.1:444444' };
   v.check(obj_ext, function(err, cleaned) {
-    assert.match(err.message, /Value out of range/);
+    assert.match(err.message, /Port in the address pair is out of range/);
   });
 
   test.finish();
