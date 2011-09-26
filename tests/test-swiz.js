@@ -263,7 +263,7 @@ exports['test_notification_types_xml'] = function(test, assert) {
 }
 
 
-exports['xtest_serial_xml'] = function(test, assert) {
+exports['test_serial_xml'] = function(test, assert) {
   var blahnode = new Node();
   blahnode.active = false;
   var sw = new swiz.Swiz(def, { stripNulls: true });
@@ -290,7 +290,7 @@ exports['xtest_serial_xml'] = function(test, assert) {
 };
 
 
-exports['xtest_serial_xml_filterFrom'] = function(test, assert) {
+exports['test_serial_xml_filterFrom'] = function(test, assert) {
   var blahnode = new Node();
   blahnode.active = false;
   var sw = new swiz.Swiz(def, { stripNulls: true, for: 'public' });
@@ -314,7 +314,7 @@ exports['xtest_serial_xml_filterFrom'] = function(test, assert) {
   );
 };
 
-exports['xtest_serial_xml_stripNulls'] = function(test, assert) {
+exports['test_serial_xml_stripNulls'] = function(test, assert) {
   var blahnode = new Node();
   blahnode.active = null;
   var sw = new swiz.Swiz(def, { stripNulls: true });
@@ -339,7 +339,7 @@ exports['xtest_serial_xml_stripNulls'] = function(test, assert) {
   );
 };
 
-exports['xtest_serial_json'] = function(test, assert) {
+exports['test_serial_json'] = function(test, assert) {
   var blahnode = new Node();
   blahnode.active = false;
   var sw = new swiz.Swiz(def, { stripNulls: true });
@@ -368,7 +368,7 @@ exports['xtest_serial_json'] = function(test, assert) {
   );
 };
 
-exports['xtest_serial_json_filterFrom'] = function(test, assert) {
+exports['test_serial_json_filterFrom'] = function(test, assert) {
   var blahnode = new Node();
   blahnode.active = false;
   var sw = new swiz.Swiz(def, { stripNulls: true, for: 'public' });
@@ -397,7 +397,7 @@ exports['xtest_serial_json_filterFrom'] = function(test, assert) {
   );
 };
 
-exports['xtest_serial_json_stripNulls'] = function(test, assert) {
+exports['test_serial_json_stripNulls'] = function(test, assert) {
   var blahnode = new Node();
   blahnode.active = null;
   var sw = new swiz.Swiz(def, { stripNulls: true });
@@ -426,7 +426,7 @@ exports['xtest_serial_json_stripNulls'] = function(test, assert) {
   );
 };
 
-exports['xtest_serial_array_xml'] = function(test, assert) {
+exports['test_serial_array_xml'] = function(test, assert) {
   var blahnode = new Node();
   var blahnode2 = new Node();
   blahnode2.hash_id = '444';
@@ -462,7 +462,7 @@ exports['xtest_serial_array_xml'] = function(test, assert) {
   );
 };
 
-exports['xtest_error_type'] = function(test, assert) {
+exports['test_error_type'] = function(test, assert) {
   var blah = { };
   var sw = new swiz.Swiz(def);
   blah.getSerializerType = function() {return 'monito';};
@@ -477,7 +477,7 @@ exports['xtest_error_type'] = function(test, assert) {
 };
 
 
-exports['xtest_serial_array_json'] = function(test, assert) {
+exports['test_serial_array_json'] = function(test, assert) {
   var blahnode = new Node();
   var blahnode2 = new Node();
   blahnode2.hash_id = '444';
@@ -527,7 +527,7 @@ exports['xtest_serial_array_json'] = function(test, assert) {
   );
 };
 
-exports['xtest_serial_edge_cases_xml'] = function(test, assert) {
+exports['test_serial_edge_cases_xml'] = function(test, assert) {
   var blahnode = new Node();
   blahnode.active = false;
   blahnode.public_ips = [];
@@ -550,7 +550,7 @@ exports['xtest_serial_edge_cases_xml'] = function(test, assert) {
   );
 };
 
-exports['xtest_serial_invalid_serializer_type_xml'] = function(test, assert) {
+exports['test_serial_invalid_serializer_type_xml'] = function(test, assert) {
   var blahnode = new Node();
   blahnode.getSerializerType = function() {
     return 'foobar';
@@ -566,7 +566,7 @@ exports['xtest_serial_invalid_serializer_type_xml'] = function(test, assert) {
   );
 };
 
-exports['xtest_simple_xml_deserialization'] = function(test, assert) {
+exports['test_simple_xml_deserialization'] = function(test, assert) {
   var node1 = new Node();
   var sw = new swiz.Swiz(def);
   
@@ -595,9 +595,9 @@ exports['xtest_simple_xml_deserialization'] = function(test, assert) {
     assert.ifError(err);
     test.finish();
   });
-}
+};
 
-exports['xtest_array_xml_deserialization'] = function(test, assert) {
+exports['test_array_xml_deserialization'] = function(test, assert) {
   var node1 = new Node();
   var node2 = new Node();
   node2.hash_id = '444';
@@ -637,4 +637,4 @@ exports['xtest_array_xml_deserialization'] = function(test, assert) {
     assert.ifError(err);
     test.finish();
   });
-}
+};
