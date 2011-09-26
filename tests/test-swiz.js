@@ -177,24 +177,24 @@ var NotificationTypes = [{
 		"fields":[{
       "name":"host",
       "description":"Fully qualified hostname to connect to",
-//      "optional":false
-      "optional":'false'
+      "optional":false
+//      "optional":'false'
     },{
       "name":"port",
       "description":"TCP port to connect to",
-//      "optional":false
-      "optional":'false'
+      "optional":false
+//      "optional":'false'
     },{
       "name":"path",
       "description":
       "The absolute path to POST to",
-//      "optional":false
-      "optional":'false'
+      "optional":false
+//      "optional":'false'
     },{
       "name":"ssl",
       "description":"Use SSL/TLS",
-//      "optional":true
-      "optional":'true'
+      "optional":true
+//      "optional":'true'
     }]
 	},{
 		"key":"email",
@@ -202,8 +202,8 @@ var NotificationTypes = [{
 		"fields":[{
       "name":"address",
       "description":"Email address to send notifications to",
-//      "optional":false
-      "optional":'false'
+      "optional":false
+//      "optional":'false'
     }]
 	}
 ];
@@ -215,8 +215,8 @@ var Contrived = [
     'fields':{
       'name': {'friz': 'baz'},
       'description': 'this is a desc',
-//      'optional': false
-      'optional': 'false'
+      'optional': false
+//      'optional': 'false'
     }
   }, {
    'key': 'key1',
@@ -224,8 +224,8 @@ var Contrived = [
     'fields':{
       'name':'foozy',
       'description': 'this is a foozy desc',
-//      'optional': true
-      'optional': 'true'
+      'optional': true
+//      'optional': 'true'
     }
   }, {
    'key': 'key2',
@@ -233,8 +233,8 @@ var Contrived = [
     'fields':{
       'name':'twozy',
       'description': 'this is a twozy desc',
-//      'optional': false
-      'optional': 'false'
+      'optional': false
+//      'optional': 'false'
     }
   }];
 
@@ -250,7 +250,7 @@ exports['test_contrived_xml'] = function(test, assert) {
   });
 }
 
-exports['xtest_notification_types_xml'] = function(test, assert) {
+exports['test_notification_types_xml'] = function(test, assert) {
   var sw = new swiz.Swiz(def, {stripNulls: true});
   sw.serialize(swiz.SERIALIZATION.SERIALIZATION_XML, 1, NotificationTypes, function(err, xml) {
     assert.ifError(err);
