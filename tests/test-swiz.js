@@ -62,26 +62,26 @@ var def = [
 
       'singular': 'nodeOpts'
     }),
-  
-  O('notification_types', 
+
+  O('notification_types',
     {
       'fields': [
         F('key', {'src' : 'key', 'ignorePublic': true, 'attribute': true}),
         F('serializerType', { src: 'serializerType', 'val': new Chain().isString().notEmpty() }),
-        F('fields', {'src': 'fields', 
+        F('fields', {'src': 'fields',
                      'val': new Chain().isArray(new Chain().isHash(new Chain().isString(), new Chain().notEmpty())),
                      'singular': 'field', 'plural': 'fields'})
       ],
       'singular': 'notification_type',
       'plural': 'notification_types'
     }),
-        
-  O('contrived', 
+
+  O('contrived',
     {
       'fields': [
         F('key', {'src' : 'key', 'ignorePublic': true, 'attribute': true}),
         F('serializerType', { src: 'serializerType', 'val': new Chain().isString().notEmpty() }),
-        F('fields', {'src': 'fields', 
+        F('fields', {'src': 'fields',
                      'val': new Chain().isHash(new Chain().isString(), new Chain().isHash(new Chain().isString(), new Chain().notEmpty())),
                      'singular': 'fields', 'plural': 'fields'})
       ],
@@ -306,6 +306,34 @@ exports['test_serial_xml_filterFrom'] = function(test, assert) {
   );
 };
 
+exports['test_serializeForPagination_xml'] = function(test, assert) {
+  var blahnode = new Node();
+  blahnode.active = false;
+  var sw = new swiz.Swiz(def, { stripNulls: true });
+  var metadata = {'page': 1, 'next_key': 'blah'};
+  sw.serializeForPagination(swiz.SERIALIZATION.SERIALIZATION_XML, 1, def[0], [blahnode],
+      metadata,
+      function(err, results)
+      {
+        assert.trimEqual(results, '<?xml version=\'1.0\' encoding=\'utf-8\'?>\n' +
+            '<container><values><node id="15245" name="gggggg"><is_active>false</is_active><agent_name>gl&lt;ah</' +
+            'agent_name><ipaddress>123.33.22.1</ipaddress>' +
+            '<public_ips><ip>123.45.55.44</ip><ip>122.123.32.2</ip></public_ips>' +
+            '<state>active</state>' +
+            '<opts><nodeOpts>' +
+            '<option1>defaultval</option1>' +
+            '<option2>defaultval</option2>' +
+            '<option3>something</option3>' +
+            '</nodeOpts></opts>' +
+            '<data><foo>thingone</foo><bar>thingtwo</bar></data></node>' +
+            '</values><metadata><page>1</page><next_key>blah</next_key>' +
+            '</metadata></container>');
+
+        test.finish();
+      }
+  );
+};
+
 exports['test_serial_xml_stripNulls'] = function(test, assert) {
   var blahnode = new Node();
   blahnode.active = null;
@@ -365,7 +393,7 @@ exports['test_serializeForPagination_json'] = function(test, assert) {
   blahnode.active = false;
   var sw = new swiz.Swiz(def, { stripNulls: true });
   var metadata = {'page': 1, 'next_key': 'blah'};
-  sw.serializeForPagination(swiz.SERIALIZATION.SERIALIZATION_JSON, 1, def[0], [blahnode], 
+  sw.serializeForPagination(swiz.SERIALIZATION.SERIALIZATION_JSON, 1, def[0], [blahnode],
       metadata,
       function(err, results)
       {
@@ -594,7 +622,7 @@ exports['test_serial_invalid_serializer_type_xml'] = function(test, assert) {
 exports['test_simple_xml_deserialization'] = function(test, assert) {
   var node1 = new Node();
   var sw = new swiz.Swiz(def);
-  
+
   var node1Built;
   var node1Xml;
   async.waterfall([
@@ -628,10 +656,10 @@ exports['test_array_xml_deserialization'] = function(test, assert) {
   node2.hash_id = '444';
   node2.agent_name = 'your mom';
   var arr = [node1, node2];
-  
+
   var node1Obj;
   var node2Obj;
-  
+
   var sw = new swiz.Swiz(def);
   async.waterfall([
     function(callback) {
