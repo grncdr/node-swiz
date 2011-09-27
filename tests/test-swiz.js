@@ -360,6 +360,39 @@ exports['test_serial_json'] = function(test, assert) {
   );
 };
 
+exports['test_serializeForPagination_json'] = function(test, assert) {
+  var blahnode = new Node();
+  blahnode.active = false;
+  var sw = new swiz.Swiz(def, { stripNulls: true });
+  var metadata = {'page': 1, 'next_key': 'blah'};
+  sw.serializeForPagination(swiz.SERIALIZATION.SERIALIZATION_JSON, 1, def[0], [blahnode], 
+      metadata,
+      function(err, results)
+      {
+        var rep = JSON.parse(results);
+        assert.deepEqual(rep.values[0].id, 15245);
+        assert.deepEqual(rep.values[0].is_active, false);
+        assert.deepEqual(rep.values[0].name, 'gggggg');
+        assert.deepEqual(rep.values[0].agent_name, 'gl<ah');
+        assert.deepEqual(rep.values[0].ipaddress, '123.33.22.1');
+        assert.deepEqual(rep.values[0].public_ips, ['123.45.55.44', '122.123.32.2']);
+        assert.deepEqual(rep.values[0].opts, {
+          option1: 'defaultval',
+          option2: 'defaultval',
+          option3: 'something'
+        });
+        assert.deepEqual(rep.values[0].data, {
+          foo: 'thingone',
+          bar: 'thingtwo'
+        });
+        assert.deepEqual(rep.values[0].state, 'active');
+        assert.deepEqual(rep.metadata.page, 1);
+        assert.deepEqual(rep.metadata.next_key, 'blah');
+        test.finish();
+      }
+  );
+};
+
 exports['test_serial_json_filterFrom'] = function(test, assert) {
   var blahnode = new Node();
   blahnode.active = false;
