@@ -311,7 +311,7 @@ exports['test_serializeForPagination_xml'] = function(test, assert) {
   blahnode.active = false;
   var sw = new swiz.Swiz(def, { stripNulls: true });
   var metadata = {'page': 1, 'next_key': 'blah'};
-  sw.serializeForPagination(swiz.SERIALIZATION.SERIALIZATION_XML, 1, def[0], [blahnode],
+  sw.serializeForPagination(swiz.SERIALIZATION.SERIALIZATION_XML, [blahnode],
       metadata,
       function(err, results)
       {
@@ -393,7 +393,7 @@ exports['test_serializeForPagination_json'] = function(test, assert) {
   blahnode.active = false;
   var sw = new swiz.Swiz(def, { stripNulls: true });
   var metadata = {'page': 1, 'next_key': 'blah'};
-  sw.serializeForPagination(swiz.SERIALIZATION.SERIALIZATION_JSON, 1, def[0], [blahnode],
+  sw.serializeForPagination(swiz.SERIALIZATION.SERIALIZATION_JSON, [blahnode],
       metadata,
       function(err, results)
       {
