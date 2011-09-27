@@ -309,7 +309,7 @@ exports['test_serial_xml_filterFrom'] = function(test, assert) {
 exports['test_serializeForPagination_xml'] = function(test, assert) {
   var blahnode = new Node();
   blahnode.active = false;
-  var sw = new swiz.Swiz(def, { stripNulls: true });
+  var sw = new swiz.Swiz(def, { stripNulls: false });
   var metadata = {'page': 1, 'next_key': 'blah'};
   sw.serializeForPagination(swiz.SERIALIZATION.SERIALIZATION_XML, [blahnode],
       metadata,
@@ -333,6 +333,51 @@ exports['test_serializeForPagination_xml'] = function(test, assert) {
       }
   );
 };
+
+exports['test_serializeForPagination_xml'] = function(test, assert) {
+  var blahnode = new Node();
+  blahnode.active = false;
+  var sw = new swiz.Swiz(def, { stripNulls: false });
+  var metadata = {'page': 1, 'next_key': 'blah'};
+  sw.serializeForPagination(swiz.SERIALIZATION.SERIALIZATION_XML, [blahnode],
+      metadata,
+      function(err, results)
+      {
+        assert.trimEqual(results, '<?xml version=\'1.0\' encoding=\'utf-8\'?>\n' +
+            '<container><values><node id="15245" name="gggggg"><is_active>false</is_active><agent_name>gl&lt;ah</' +
+            'agent_name><ipaddress>123.33.22.1</ipaddress>' +
+            '<public_ips><ip>123.45.55.44</ip><ip>122.123.32.2</ip></public_ips>' +
+            '<state>active</state>' +
+            '<opts><nodeOpts>' +
+            '<option1>defaultval</option1>' +
+            '<option2>defaultval</option2>' +
+            '<option3>something</option3>' +
+            '</nodeOpts></opts>' +
+            '<data><foo>thingone</foo><bar>thingtwo</bar></data></node>' +
+            '</values><metadata><page>1</page><next_key>blah</next_key>' +
+            '</metadata></container>');
+
+        test.finish();
+      }
+  );
+};
+
+exports['test_serializeForPagination_empty_response_xml'] = function(test, assert) {
+  var sw = new swiz.Swiz(def, { stripNulls: false });
+  var metadata = {'page': 1, 'next_key': 'blah'};
+  sw.serializeForPagination(swiz.SERIALIZATION.SERIALIZATION_XML, [],
+      metadata,
+      function(err, results)
+      {
+        assert.trimEqual(results, '<?xml version=\'1.0\' encoding=\'utf-8\'?>\n' +
+            '<container><values /><metadata><page>1</page><next_key>blah</next_key>' +
+            '</metadata></container>');
+
+        test.finish();
+      }
+  );
+};
+
 
 exports['test_serial_xml_stripNulls'] = function(test, assert) {
   var blahnode = new Node();
@@ -383,6 +428,20 @@ exports['test_serial_json'] = function(test, assert) {
           bar: 'thingtwo'
         });
         assert.deepEqual(rep.state, 'active');
+        test.finish();
+      }
+  );
+};
+
+exports['test_serializeForPagination_empty_list_json'] = function(test, assert) {
+  var sw = new swiz.Swiz(def, { stripNulls: false });
+  var metadata = {'page': 1, 'next_key': 'blah'};
+  sw.serializeForPagination(swiz.SERIALIZATION.SERIALIZATION_JSON, [],
+      metadata,
+      function(err, results)
+      {
+        var rep = JSON.parse(results);
+        assert.equal(rep.values.length, 0);
         test.finish();
       }
   );
@@ -594,7 +653,7 @@ exports['test_serial_edge_cases_xml'] = function(test, assert) {
             '<node id="15245" name="gggggg"><is_active>false</' +
             'is_active><agent_name>gl&lt;ah</' +
             'agent_name><ipaddress>123.33.22.1</ipaddress>' +
-            '<state>active</state>' +
+            '<public_ips /><state>active</state>' +
             '<opts />' +
             '<data><foo>thingone</foo><bar>thingtwo</bar></data></node>');
 
