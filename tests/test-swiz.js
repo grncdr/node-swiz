@@ -178,23 +178,19 @@ var NotificationTypes = [{
       "name":"host",
       "description":"Fully qualified hostname to connect to",
       "optional":false
-//      "optional":'false'
     },{
       "name":"port",
       "description":"TCP port to connect to",
       "optional":false
-//      "optional":'false'
     },{
       "name":"path",
       "description":
       "The absolute path to POST to",
       "optional":false
-//      "optional":'false'
     },{
       "name":"ssl",
       "description":"Use SSL/TLS",
       "optional":true
-//      "optional":'true'
     }]
 	},{
 		"key":"email",
@@ -203,7 +199,6 @@ var NotificationTypes = [{
       "name":"address",
       "description":"Email address to send notifications to",
       "optional":false
-//      "optional":'false'
     }]
 	}
 ];
@@ -216,7 +211,6 @@ var Contrived = [
       'name': {'friz': 'baz'},
       'description': 'this is a desc',
       'optional': false
-//      'optional': 'false'
     }
   }, {
    'key': 'key1',
@@ -225,7 +219,6 @@ var Contrived = [
       'name':'foozy',
       'description': 'this is a foozy desc',
       'optional': true
-//      'optional': 'true'
     }
   }, {
    'key': 'key2',
@@ -234,7 +227,6 @@ var Contrived = [
       'name':'twozy',
       'description': 'this is a twozy desc',
       'optional': false
-//      'optional': 'false'
     }
   }];
 
