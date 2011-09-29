@@ -217,6 +217,59 @@ var Contrived = [
     }
   }];
 
+exports['test_stripnull'] = function(test, assert) {
+  var objWithNull = {
+    option1: 'not null',
+    option2: null,
+    option3: 'also not null',
+    serializerType: 'NodeOpts'
+  };
+  
+  async.waterfall([
+    function nullRemainsJS(callback) {
+      var sw = new swiz.Swiz(def, { stripNulls: false});
+      sw.serialize(swiz.SERIALIZATION.SERIALIZATION_JSON, 1, objWithNull, function(err, res) {
+        assert.ifError(err);
+        var reconstituted = JSON.parse(res);
+        assert.ok(reconstituted['option2'] === null);
+        callback(err);
+      });
+    },
+    function nullGetsStrippedJS(callback) {
+      var sw = new swiz.Swiz(def, { stripNulls: true});
+      sw.serialize(swiz.SERIALIZATION.SERIALIZATION_JSON, 1, objWithNull, function(err, res) {
+        assert.ifError(err);
+        var reconstituted = JSON.parse(res);
+        assert.ok(reconstituted['option2'] === undefined);
+        callback(err);
+      });
+    },
+    function nullRemainsXML(callback) {
+      var sw = new swiz.Swiz(def, { stripNulls: false});
+      sw.serialize(swiz.SERIALIZATION.SERIALIZATION_XML, 1, objWithNull, function(err, res) {
+        assert.ifError(err);
+        var reconstituted = sw.deserializeXml(res);
+        assert.ok(reconstituted['option2'] === null);
+        callback(err);
+      });
+    },
+    function nullGetsStrippedJS(callback) {
+      var sw = new swiz.Swiz(def, { stripNulls: true});
+      sw.serialize(swiz.SERIALIZATION.SERIALIZATION_XML, 1, objWithNull, function(err, res) {
+        assert.ifError(err);        
+        var reconstituted = sw.deserializeXml(res);
+        assert.ok(reconstituted['option2'] === undefined);
+        callback(err);
+      });
+    }
+
+  ], function(err) {
+    assert.ifError(err);
+    test.finish();
+  });
+  
+}
+
 exports['test_build_object'] = function(test, assert) {
   var blahnode = new Node();
   var sw = new swiz.Swiz(def);
