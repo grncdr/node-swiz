@@ -158,33 +158,6 @@ Node.prototype.get_public_address = function(callback) {
 Node.prototype.getSerializerType = function() {return 'Node';};
 
 
-exports['test_build_object'] = function(test, assert) {
-  var blahnode = new Node();
-  var sw = new swiz.Swiz(def);
-  sw.buildObject(blahnode, function(err, result) {
-    assert.ifError(err);
-    assert.deepEqual(result, {
-      id: 15245,
-      is_active: true,
-      name: 'gggggg',
-      agent_name: 'gl<ah',
-      ipaddress: '123.33.22.1',
-      public_ips: ['123.45.55.44', '122.123.32.2'],
-      opts: {
-        option1: 'defaultval',
-        option2: 'defaultval',
-        option3: 'something'
-      },
-      data: {
-        foo: 'thingone',
-        bar: 'thingtwo'
-      },
-      state: 'active'
-    });
-    test.finish();
-  });
-};
-
 var NotificationTypes = [{
 		"key":"web_hook",
 		"serializerType":"notification_types",
@@ -243,6 +216,33 @@ var Contrived = [
       'optional': false
     }
   }];
+
+exports['test_build_object'] = function(test, assert) {
+  var blahnode = new Node();
+  var sw = new swiz.Swiz(def);
+  sw.buildObject(blahnode, function(err, result) {
+    assert.ifError(err);
+    assert.deepEqual(result, {
+      id: 15245,
+      is_active: true,
+      name: 'gggggg',
+      agent_name: 'gl<ah',
+      ipaddress: '123.33.22.1',
+      public_ips: ['123.45.55.44', '122.123.32.2'],
+      opts: {
+        option1: 'defaultval',
+        option2: 'defaultval',
+        option3: 'something'
+      },
+      data: {
+        foo: 'thingone',
+        bar: 'thingtwo'
+      },
+      state: 'active'
+    });
+    test.finish();
+  });
+};
 
 exports['test_deserialize_text_only_entities'] = function(test, assert) {
   var xml = '<accounting><entities>2</entities><serializerType>accounting</serializerType></accounting>';
