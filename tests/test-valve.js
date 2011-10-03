@@ -1566,7 +1566,11 @@ exports['test_final'] = function(test, assert) {
 
   finalValidator = function(obj, callback) {
     if ((! obj.v4) && (! obj.v6)) {
-      callback('At least one of v4 or v6 must be specified');
+      callback({
+        key: 'v4',
+        parentKeys: null,
+        message: 'At least one of v4 or v6 must be specified'
+      });
     } else
       callback(null, obj);
   };
