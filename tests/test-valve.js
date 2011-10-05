@@ -16,6 +16,7 @@
  */
 
 var swiz = require('swiz');
+var async = require('async');
 var V = swiz.Valve;
 var C = swiz.Chain;
 var O = swiz.struct.Obj;
@@ -1290,6 +1291,47 @@ exports['test_validate_nested_hash'] = function(test, assert) {
 
 
 exports['test_validate_enum'] = function(test, assert) {
+  var v = new V({
+        a: C().enumerated({inactive: 0, active: 1, full_no_new_checks: 2}).optional()
+      }),
+      obj = { a: 2 },
+      obj_ext = { a: 'full_no_new_checks', b: 2 },
+      neg = { a: 0 },
+      obj2 = { };
+
+
+
+  async.parallel([
+    function pos1(callback) {
+      // positive case
+      v.check(obj_ext, function(err, cleaned) {
+        assert.ifError(err);
+        assert.deepEqual(cleaned, obj, 'enum test');
+        callback();
+      });
+    },
+    function neg1(callback) {
+      // negative case 1
+      v.check(neg, function(err, cleaned) {
+        assert.match(err.message, /Invalid value '0'/, 'enum test (negative case 2)');
+        callback();
+      });
+    },
+    function pos2(callback) {
+      // negative case 1
+      v.check(obj2, function(err, cleaned) {
+        assert.ifError(err);
+        assert.deepEqual(cleaned, obj2);
+        callback();
+      });
+    }
+  ], function (err) {
+    test.finish();
+  });
+};
+
+
+exports['test_validate_enum_optional'] = function(test, assert) {
   var v = new V({
     a: C().enumerated({inactive: 0, active: 1, full_no_new_checks: 2})
   });
