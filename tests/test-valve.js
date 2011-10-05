@@ -34,10 +34,27 @@ var def = [
         F('name', {'src' : 'get_name', 'desc' : 'name', 'attribute': true,
                    'val' : C().isString()}),
         F('agent_name', {'val' : C().isString().notEmpty()}),
-        F('ipaddress' , {'src' : 'get_public_address', 'val' : C().isIP()}),
+        F('ipaddress' , {'src' : 'get_public_address', 'val' : C().isIP()})
       ],
       'plural': 'nodes'
     }),
+
+    O('Node2',
+    {
+      'fields': [
+        F('id', {'src': 'hash_id', 'desc': 'hash ID for the node', 'attribute': true,
+                 'val' : C().isString()}),
+        F('is_active', {'src': 'active', 'desc': 'is the node active?',
+                        'val' : C().toBoolean(), 'coerceTo' : 'boolean'}),
+        F('name', {'src' : 'get_name', 'desc' : 'name', 'attribute': true,
+                   'val' : C().isString()}),
+        F('agent_name', {'val' : C().isString().notEmpty()}),
+        F('state', {'enumerated' : {inactive: 0, active: 1, full_no_new_checks: 2}}),
+        F('ipaddress' , {'src' : 'get_public_address', 'val' : C().isIP()})
+      ],
+      'plural': 'nodes'
+    }),
+
 
   O('NodeOpts',
     {
@@ -54,6 +71,15 @@ var exampleNode = {
   'is_active' : true,
   'name' : 'exmample',
   'agent_name' : 'your mom',
+  'ipaddress' : '42.24.42.24'
+};
+
+var exampleNode2 = {
+  'id' : 'xkCD366',
+  'is_active' : true,
+  'name' : 'exmample',
+  'agent_name' : 'your mom',
+  'state': 'active',
   'ipaddress' : '42.24.42.24'
 };
 
@@ -1683,6 +1709,18 @@ exports['test_schema_translation_2'] = function(test, assert) {
     test.finish();
   });
 };
+
+exports['test_schema_translation_enumerated'] = function(test, assert) {
+  var validity = swiz.defToValve(def),
+      v = new V(validity.Node2);
+
+  v.check(exampleNode2, function(err, cleaned) {
+    assert.ifError(err);
+    assert.equal(cleaned.state, 1);
+    test.finish();
+  });
+};
+
 
 exports['test_roundtrip_json_swiz_valve'] = function(test, assert) {
   var validity = swiz.defToValve(def),
