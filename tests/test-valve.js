@@ -1535,10 +1535,10 @@ exports['test_partial_immutable'] = function(test, assert) {
 
     var existing = { a: 'foo', b: 1233, c: 'hello world' };
     v.checkUpdate(existing, neg, function(err, cleaned) {
-      //assert.ok(err);
-      //assert.deepEqual(err.message, 'Attempted to mutate immutable key');
-      //assert.equal(err.key, 'b');
-      //assert.deepEqual(existing, {a: 'foo', b: 1233, c: 'hello world'});
+      assert.ok(err);
+      assert.deepEqual(err.message, 'Attempted to mutate immutable field');
+      assert.equal(err.key, 'b');
+      assert.deepEqual(existing, {a: 'foo', b: 1233, c: 'hello world'});
       test.finish();
     });
   });
@@ -1552,13 +1552,23 @@ exports['test_partial_immutable_unchanged'] = function(test, assert) {
     c: C().isString()
   });
 
-  var neg = { a: 'foo', b: 1234 };
+  var neg = { a: 'bar', b: 1234 };
   v.checkPartial(neg, function(err, cleaned) {
     assert.ifError(err);
 
-    var existing = { a: 'bar', b: 1234, c: 'hello world' };
+    var existing = { a: 'foo', b: 1234, c: 'hello world' };
     v.checkUpdate(existing, neg, function(err, cleaned) {
-      //assert.ok(!err);
+      assert.ok(!err);
+      assert.deepEqual(cleaned, {
+        a: 'bar',
+        b: 1234,
+        c: 'hello world'
+      });
+      assert.deepEqual(existing, {
+        a: 'foo',
+        b: 1234,
+        c: 'hello world'
+      });
       test.finish();
     });
   });
