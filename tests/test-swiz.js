@@ -264,6 +264,25 @@ exports['test_deserialize_text_only_entities'] = function(test, assert) {
   test.finish();
 };
 
+exports['test_deserializeXml_container_object'] = function(test, assert) {
+  var xml = '<container><values><node id="15245" name="gggggg"><is_active>false</is_active><agent_name>gl&lt;ah</' +
+            'agent_name><ipaddress>123.33.22.1</ipaddress>' +
+            '<public_ips><ip>123.45.55.44</ip><ip>122.123.32.2</ip></public_ips>' +
+            '<state>active</state>' +
+            '<opts><nodeOpts>' +
+            '<option1>defaultval</option1>' +
+            '<option2>defaultval</option2>' +
+            '<option3>something</option3>' +
+            '</nodeOpts></opts>' +
+            '<data><foo>thingone</foo><bar>thingtwo</bar></data></node>' +
+            '</values><metadata><page>1</page><next_key>blah</next_key>' +
+            '</metadata></container>';
+  var sw = new swiz.Swiz(def, {stripNulls: true});
+  var obj = sw.deserializeXml(xml);
+  assert.deepEqual(obj.metadata, {'page': 1, 'next_key': 'blah'});
+  test.finish();
+};
+
 exports['test_can_roundtrip_raw_object'] = function(test, assert) {
   // this is a pure javascript object that doesn't have a getSerializerType function, but is decorated with 
   // serializerType fields to support serialization to xml.
