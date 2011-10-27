@@ -1813,6 +1813,31 @@ exports['test_roundtrip_xml_swiz_valve'] = function(test, assert) {
   });
 };
 
+exports['test_xml_with_whitespace'] = function(test, assert) {
+  var validity = swiz.defToValve(def),
+      v = new V(validity.Node),
+      testxml,
+      obj, sw = new swiz.Swiz(def);
+
+  testxml = sw.deserializeXml('<?xml version="1.0" encoding="utf-8"?><node id="xkCD366" name="exmample"> <is_active>true</is_active><agent_name>your mom</agent_name><ipaddress>42.24.42.24</ipaddress></node>');
+  v.check(testxml, function(err, cleaned) {
+    assert.ifError(err);
+    obj = cleaned;
+    obj.getSerializerType = function() {return 'Node';};
+    sw.serialize(swiz.SERIALIZATION.SERIALIZATION_XML, 1, obj,
+      function(err, xml) {
+        console.error(xml);
+        assert.ifError(err);
+        sw.deserialize(swiz.SERIALIZATION.SERIALIZATION_XML, 1, xml, function(err, newObj) {
+          assert.deepEqual(newObj, exampleNode, 'Round trip json swiz/valve test');
+          assert.ifError(err);
+          test.finish();
+        });
+    });
+  });
+};
+
+
 exports['test_boolean'] = function(test, assert) {
   var v = new V({
     a: C().isBoolean()
