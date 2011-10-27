@@ -1877,7 +1877,7 @@ exports['test_port'] = function(test, assert) {
   test.finish();
 };
 
-exports['test_getValidatorPos_and_hasValidator'] = function(test, assert) {
+exports['test_getValidatorPos_hasValidator_and_getValidatorAtPos'] = function(test, assert) {
   var v = new V({
     a: C().len(1).isNumeric(),
     b: C().len(1).isNumeric().optional()
@@ -1893,6 +1893,9 @@ exports['test_getValidatorPos_and_hasValidator'] = function(test, assert) {
 
   assert.equal(v.schema.b.getValidatorPos('optional'), 2);
   assert.ok(v.schema.b.hasValidator('optional'));
+
+  assert.equal(v.schema.b.getValidatorAtPos(2).name, 'optional');
+  assert.equal(v.schema.b.getValidatorAtPos(6), null);
 
   test.finish();
 };
