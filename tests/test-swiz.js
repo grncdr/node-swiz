@@ -43,7 +43,7 @@ var def = [
         F('name', {'src' : 'get_name', 'desc' : 'name', 'attribute': true}),
         F('agent_name'),
         F('ipaddress' , {'src' : 'get_public_address'}),
-        F('public_ips', {'singular': 'ip', 'filterFrom': ['public']}),
+        F('public_ips', {'singular': 'ip', 'filterFrom': ['public'], 'coerceTo': 'array'}),
         F('state', {'enumerated' : {inactive: 0, active: 1, full_no_new_checks: 2},
                      'filterFrom': ['public', 'test1']}),
         F('opts', {'src': 'options'}),
@@ -74,13 +74,13 @@ var def = [
       'singular': 'notification_type',
       'plural': 'notification_types'
     }),
-        
+
   O('accounting',
     {
       'fields': [
-        F('monitoring_zones', { 'val': new Chain().isInt() }),  
-        F('notification_plans', { 'val': new Chain().isInt() }),  
-        F('notification_types', { 'val': new Chain().isInt() }),  
+        F('monitoring_zones', { 'val': new Chain().isInt() }),
+        F('notification_plans', { 'val': new Chain().isInt() }),
+        F('notification_types', { 'val': new Chain().isInt() }),
         F('entities', { 'val': new Chain().isInt() })
         // you get the ideal.
       ],
@@ -182,7 +182,10 @@ exports['test_stripnull'] = function(test, assert) {
     option3: 'also not null',
     serializerType: 'NodeOpts'
   };
-  
+
+  var node1 = new Node();
+  node1.public_ips = [];
+
   async.waterfall([
     function nullRemainsJS(callback) {
       var sw = new swiz.Swiz(def, { stripNulls: false});
@@ -214,18 +217,28 @@ exports['test_stripnull'] = function(test, assert) {
     function nullGetsStrippedJS(callback) {
       var sw = new swiz.Swiz(def, { stripNulls: true});
       sw.serialize(swiz.SERIALIZATION.SERIALIZATION_XML, 1, objWithNull, function(err, res) {
-        assert.ifError(err);        
+        assert.ifError(err);
         var reconstituted = sw.deserializeXml(res);
         assert.ok(reconstituted['option2'] === undefined);
         callback(err);
       });
-    }
+    },
+  function emptyArrayWithCoerceToArray(callback) {
+      var sw = new swiz.Swiz(def, { stripNulls: false});
+      sw.serialize(swiz.SERIALIZATION.SERIALIZATION_XML, 1, node1, function(err, res) {
+        assert.ifError(err);
+        var reconstituted = sw.deserializeXml(res);
+        assert.deepEqual(reconstituted.public_ips, []);
+        callback(err);
+      });
+    },
+
 
   ], function(err) {
     assert.ifError(err);
     test.finish();
   });
-  
+
 }
 
 exports['test_build_object'] = function(test, assert) {
@@ -284,7 +297,7 @@ exports['test_deserializeXml_container_object'] = function(test, assert) {
 };
 
 exports['test_can_roundtrip_raw_object'] = function(test, assert) {
-  // this is a pure javascript object that doesn't have a getSerializerType function, but is decorated with 
+  // this is a pure javascript object that doesn't have a getSerializerType function, but is decorated with
   // serializerType fields to support serialization to xml.
   var sw = new swiz.Swiz(def, {stripNulls: false});
   async.waterfall([
