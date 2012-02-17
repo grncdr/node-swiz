@@ -35,7 +35,7 @@
     "sprintf": "0.1.1"
   },
   "devDependencies": {
-    "whiskey": "0.4.1"
+    "whiskey": "0.6.6"
   },
   "licenses": [
     {
