@@ -348,7 +348,7 @@ exports['test_validate_ip_blacklist'] = function(test, assert) {
 
   neg = {a: 'fc00:1:0:0:1' };
   v.check(neg, function(err, cleaned) {
-    assert.deepEqual(err.message, 'Invalid IP', 'IP test (negative case 2)');
+    assert.match(err.message, /Invalid IPv6/, 'IP test (negative case 2)');
   });
 
 
@@ -1826,7 +1826,6 @@ exports['test_xml_with_whitespace'] = function(test, assert) {
     obj.getSerializerType = function() {return 'Node';};
     sw.serialize(swiz.SERIALIZATION.SERIALIZATION_XML, 1, obj,
       function(err, xml) {
-        console.error(xml);
         assert.ifError(err);
         sw.deserialize(swiz.SERIALIZATION.SERIALIZATION_XML, 1, xml, function(err, newObj) {
           assert.deepEqual(newObj, exampleNode, 'Round trip json swiz/valve test');
