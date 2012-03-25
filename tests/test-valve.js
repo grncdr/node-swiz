@@ -348,7 +348,7 @@ exports['test_validate_ip_blacklist'] = function(test, assert) {
 
   neg = {a: 'fc00:1:0:0:1' };
   v.check(neg, function(err, cleaned) {
-    assert.match(err.message, /Invalid IPv6/, 'IP test (negative case 2)');
+    assert.match(err.message, /Incorrect number of groups found/, 'IP test (negative case 2)');
   });
 
 
