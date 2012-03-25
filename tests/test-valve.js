@@ -144,6 +144,21 @@ exports['test_validate_int'] = function(test, assert) {
 };
 
 
+exports['test_transformation_validator'] = function(test, assert) {
+  var v = new V({
+    a: C().isInt().toInt().optional()
+  });
+
+  var obj = { a: '10' };
+
+  v.check(obj, function(err, cleaned) {
+    assert.ifError(err);
+    assert.deepEqual(cleaned, {'a': 10});
+    test.finish();
+  });
+};
+
+
 exports['test_validate_email'] = function(test, assert) {
   var v = new V({
     a: C().isEmail()
