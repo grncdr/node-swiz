@@ -164,8 +164,6 @@ exports['test_isUnique'] = function(test, assert) {
     a: C().isUnique()
   });
 
-  var failed = false;
-
   // positive case
   var obj1 = { a: [1, 2, 3, 4, 5] };
   var obj2 = { a: [9, 2, 3, 4, 5] };
@@ -184,17 +182,9 @@ exports['test_isUnique'] = function(test, assert) {
   var obj1Neg = { a: {} };
   var obj2Neg = { a: [2, 2, 3, 4, 5] };
 
-  try {
-    v.check(obj1Neg, function(err, cleaned) {
-      assert.ifError(err);
-      assert.deepEqual(cleaned, obj);
-    });
-  }
-  catch (e) {
-    failed = true;
-  }
-
-  assert.ok(failed);
+  v.check(obj1Neg, function(err, cleaned) {
+    assert.ok(err);
+  });
 
   v.check(obj2Neg, function(err, cleaned) {
     assert.ok(err);
@@ -229,17 +219,9 @@ exports['test_toUnique'] = function(test, assert) {
   var obj1Neg = { a: {} };
   var obj2Neg = { a: [2, 2, 3, 3, 3, 3, 4, 5] };
 
-  try {
-    v.check(obj1Neg, function(err, cleaned) {
-      assert.ifError(err);
-      assert.deepEqual(cleaned, obj);
-    });
-  }
-  catch (e) {
-    failed = true;
-  }
-
-  assert.ok(failed);
+  v.check(obj1Neg, function(err, cleaned) {
+    assert.ok(err);
+  });
 
   v.check(obj2Neg, function(err, cleaned) {
     assert.ifError(err);
